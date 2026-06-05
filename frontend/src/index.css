@@ -3,9 +3,11 @@
 @tailwind utilities;
 
 .custom-input {
-  @apply bg-gray-100 rounded-lg px-5 py-2 focus:border border-blue-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px];
+  /* @apply ko ekdum premium slate subtle text boxes me convert kar diya hai */
+  @apply w-full md:w-72 lg:w-[340px] px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm;
 }
 
 .auth-btn {
-  @apply px-24 md:px-[118px] lg:px-[140px] py-2 rounded-md text-white bg-gradient-to-l from-blue-400 to-yellow-400 font-medium m-2 mb-6 hover:from-blue-500 hover:to-yellow-500;
+  /* Boring gradients aur rough padding hata kar button ko ek clean sleek structure de diya hai */
+  @apply w-full md:w-72 lg:w-[340px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 transition-all text-sm block mx-auto;
 }

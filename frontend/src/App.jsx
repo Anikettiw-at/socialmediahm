@@ -22,34 +22,44 @@ const App = () => {
         <Loading />
       ) : (
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={isAuth ? <Home /> : <Login />} />
-            <Route path="/reels" element={isAuth ? <Reels /> : <Login />} />
-            <Route
-              path="/account"
-              element={isAuth ? <Account user={user} /> : <Login />}
-            />
-            <Route
-              path="/user/:id"
-              element={isAuth ? <UserAccount user={user} /> : <Login />}
-            />
-            <Route path="/login" element={!isAuth ? <Login /> : <Home />} />
-            <Route
-              path="/register"
-              element={!isAuth ? <Register /> : <Home />}
-            />
-            <Route path="*" element={<NotFound />} />
-            <Route
-              path="/register"
-              element={!isAuth ? <Register /> : <Home />}
-            />
-            <Route path="/search" element={isAuth ? <Search /> : <Login />} />
-            <Route
-              path="/chat"
-              element={isAuth ? <ChatPage user={user} /> : <Login />}
-            />
-          </Routes>
-          {isAuth && <NavigationBar />}
+          {/* Main Layout Wrapper: NavigationBar ko global fixed screen layer dene ke liye */}
+          <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col justify-between">
+            
+            {/* Top/Side spacing adjustments for main application grid */}
+            <div className="flex-1 w-full">
+              <Routes>
+                <Route path="/" element={isAuth ? <Home /> : <Login />} />
+                <Route path="/reels" element={isAuth ? <Reels /> : <Login />} />
+                <Route
+                  path="/account"
+                  element={isAuth ? <Account user={user} /> : <Login />}
+                />
+                <Route
+                  path="/user/:id"
+                  element={isAuth ? <UserAccount user={user} /> : <Login />}
+                />
+                <Route path="/login" element={!isAuth ? <Login /> : <Home />} />
+                <Route
+                  path="/register"
+                  element={!isAuth ? <Register /> : <Home />}
+                />
+                <Route path="/search" element={isAuth ? <Search /> : <Login />} />
+                <Route
+                  path="/chat"
+                  element={isAuth ? <ChatPage user={user} /> : <Login />}
+                />
+                {/* Fallback Catch-all Route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+
+            {/* Render navigation bar gracefully if user is authenticated */}
+            {isAuth && (
+              <div className="w-full z-50">
+                <NavigationBar />
+              </div>
+            )}
+          </div>
         </BrowserRouter>
       )}
     </>
