@@ -1,70 +1,82 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { AiOutlineHome, AiFillHome } from "react-icons/ai";
 import { BsCameraReelsFill, BsCameraReels } from "react-icons/bs";
 import { IoSearchCircleOutline, IoSearchCircle } from "react-icons/io5";
-import {
-  IoChatbubbleEllipses,
-  IoChatbubbleEllipsesOutline,
-} from "react-icons/io5";
+import { IoChatbubbleEllipses, IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { RiAccountCircleFill, RiAccountCircleLine } from "react-icons/ri";
 
 const NavigationBar = () => {
-  const [tab, setTab] = useState(window.location.pathname);
+  const location = useLocation();
+  const [tab, setTab] = useState(location.pathname);
+
+  useEffect(() => {
+    setTab(location.pathname);
+  }, [location.pathname]);
+
   return (
-    <div className="fixed bottom-0 w-full bg-white py-3">
-      <div className="flex justify-around">
+    <div className="w-full bg-white/80 backdrop-blur-md border-t md:border-t-0 md:border-b border-slate-100 py-3 px-4 transition-all">
+      <div className="max-w-md mx-auto flex justify-between items-center">
+        
+        {/* HOME LINK */}
         <Link
           to={"/"}
           onClick={() => setTab("/")}
-          className="flex flex-col items-center text-2xl"
+          className={`flex flex-col items-center p-2 rounded-xl transition-all duration-200 ${
+            tab === "/" ? "text-blue-600 scale-110" : "text-slate-400 hover:text-slate-600"
+          }`}
         >
-          <span>{tab === "/" ? <AiFillHome /> : <AiOutlineHome />}</span>
+          <span className="text-2xl">{tab === "/" ? <AiFillHome /> : <AiOutlineHome />}</span>
         </Link>
+
+        {/* REELS LINK */}
         <Link
           to={"/reels"}
           onClick={() => setTab("/reels")}
-          className="flex flex-col items-center text-2xl"
+          className={`flex flex-col items-center p-2 rounded-xl transition-all duration-200 ${
+            tab === "/reels" ? "text-blue-600 scale-110" : "text-slate-400 hover:text-slate-600"
+          }`}
         >
-          <span>
-            {tab === "/reels" ? <BsCameraReelsFill /> : <BsCameraReels />}
-          </span>
+          <span className="text-2xl">{tab === "/reels" ? <BsCameraReelsFill /> : <BsCameraReels />}</span>
         </Link>
+
+        {/* SEARCH LINK */}
         <Link
-          onClick={() => setTab("/search")}
           to={"/search"}
-          className="flex flex-col items-center text-2xl"
+          onClick={() => setTab("/search")}
+          className={`flex flex-col items-center p-2 rounded-xl transition-all duration-200 ${
+            tab === "/search" ? "text-blue-600 scale-110" : "text-slate-400 hover:text-slate-600"
+          }`}
         >
-          <span>
-            {tab === "/search" ? <IoSearchCircle /> : <IoSearchCircleOutline />}
-          </span>
+          <span className="text-2xl">{tab === "/search" ? <IoSearchCircle /> : <IoSearchCircleOutline />}</span>
         </Link>
+
+        {/* CHAT LINK */}
         <Link
-          onClick={() => setTab("/chat")}
           to={"/chat"}
-          className="flex flex-col items-center text-2xl"
+          onClick={() => setTab("/chat")}
+          className={`flex flex-col items-center p-2 rounded-xl transition-all duration-200 ${
+            tab === "/chat" ? "text-blue-600 scale-110" : "text-slate-400 hover:text-slate-600"
+          }`}
         >
-          <span>
-            {tab === "/chat" ? (
-              <IoChatbubbleEllipses />
-            ) : (
-              <IoChatbubbleEllipsesOutline />
-            )}
+          <span className="text-2xl">
+            {tab === "/chat" ? <IoChatbubbleEllipses /> : <IoChatbubbleEllipsesOutline />}
           </span>
         </Link>
+
+        {/* ACCOUNT LINK */}
         <Link
-          onClick={() => setTab("/account")}
           to={"/account"}
-          className="flex flex-col items-center text-2xl"
+          onClick={() => setTab("/account")}
+          className={`flex flex-col items-center p-2 rounded-xl transition-all duration-200 ${
+            tab === "/account" ? "text-blue-600 scale-110" : "text-slate-400 hover:text-slate-600"
+          }`}
         >
-          <span>
-            {tab === "/account" ? (
-              <RiAccountCircleFill />
-            ) : (
-              <RiAccountCircleLine />
-            )}
+          <span className="text-2xl">
+            {tab === "/account" ? <RiAccountCircleFill /> : <RiAccountCircleLine />}
           </span>
         </Link>
+
       </div>
     </div>
   );
