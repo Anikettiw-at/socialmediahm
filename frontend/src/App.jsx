@@ -22,11 +22,11 @@ const App = () => {
         <Loading />
       ) : (
         <BrowserRouter>
-          {/* Main Layout Wrapper: NavigationBar ko global fixed screen layer dene ke liye */}
-          <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col justify-between">
+          {/* Main Frame Shell Structure */}
+          <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col antialiased">
             
-            {/* Top/Side spacing adjustments for main application grid */}
-            <div className="flex-1 w-full">
+            {/* Dynamic Content Core Grid Body Layout */}
+            <div className="flex-1 w-full max-w-7xl mx-auto pb-20 md:pb-6 transition-all">
               <Routes>
                 <Route path="/" element={isAuth ? <Home /> : <Login />} />
                 <Route path="/reels" element={isAuth ? <Reels /> : <Login />} />
@@ -48,17 +48,17 @@ const App = () => {
                   path="/chat"
                   element={isAuth ? <ChatPage user={user} /> : <Login />}
                 />
-                {/* Fallback Catch-all Route */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
 
-            {/* Render navigation bar gracefully if user is authenticated */}
+            {/* Global Fixed Navigation Bar Frame Layer */}
             {isAuth && (
-              <div className="w-full z-50">
+              <div className="fixed bottom-0 left-0 w-full md:sticky md:top-0 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] border-t md:border-b md:border-t-0 border-slate-100">
                 <NavigationBar />
               </div>
             )}
+            
           </div>
         </BrowserRouter>
       )}
