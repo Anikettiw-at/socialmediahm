@@ -8,7 +8,7 @@ import { isAuth } from "./middlewares/isAuth.js";
 import { User } from "./models/userModel.js";
 import { app, server } from "./socket/socket.js";
 import path from "path";
-import cors from "cors"; // CORS import kiya
+import cors from "cors";
 
 // Env config sabse upar
 dotenv.config();
@@ -21,7 +21,6 @@ cloudinary.v2.config({
 });
 
 // Middlewares setup
-// cors() ko bina restriction ke chalaya hai taaki frontend Vercel se easily connect ho sake
 app.use(cors({
   origin: true, 
   credentials: true
@@ -87,17 +86,13 @@ app.use("/api/user", userRoutes);
 app.use("/api/post", postRoutes);
 app.use("/api/messages", messageRoutes);
 
-const __dirname = path.resolve();
-
-// Static files (local fallback ke liye, separate deploy me iska use nahi hoga)
-app.use(express.static(path.join(__dirname, "/frontend/dist")));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
+// Root route to check deployment status on Render
+app.get("/", (req, res) => {
+  res.send("Backend is running successfully!");
 });
 
 // Server listener
 server.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on port ${port}`);
   connectDb();
 });
