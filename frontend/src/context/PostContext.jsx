@@ -24,10 +24,16 @@ export const PostContextProvider = ({ children }) => {
 
   const [addLoading, setAddLoading] = useState(false);
 
-  async function addPost(formdata, setFile, setFilePrev, setCaption, type) {
+  // 🛠️ Parameters ka order main components ke sequence ke sath sync kar diya hai
+  async function addPost(formdata, setFile, setCaption, setFilePrev, type) {
     setAddLoading(true);
     try {
-      const { data } = await axios.post("/api/post/new?type=" + type, formdata);
+      const { data } = await axios.post("/api/post/new?type=" + type, formdata, {
+        headers: {
+          "Content-Type": "multipart/form-data", // 👈 File uploads ke liye zaroori hai
+        },
+        withCredentials: true, // 👈 403 Forbidden/Unauthorized se bachne ke liye cookies enforce ki hain
+      });
 
       toast.success(data.message);
       fetchPosts();
@@ -36,7 +42,8 @@ export const PostContextProvider = ({ children }) => {
       setCaption("");
       setAddLoading(false);
     } catch (error) {
-      toast.error(error.response.data.message);
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
       setAddLoading(false);
     }
   }
@@ -48,7 +55,7 @@ export const PostContextProvider = ({ children }) => {
       toast.success(data.message);
       fetchPosts();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Error liking post");
     }
   }
 
@@ -62,7 +69,7 @@ export const PostContextProvider = ({ children }) => {
       setComment("");
       setShow(false);
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Error adding comment");
     }
   }
 
@@ -75,7 +82,7 @@ export const PostContextProvider = ({ children }) => {
       fetchPosts();
       setLoading(false);
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Error deleting post");
       setLoading(false);
     }
   }
@@ -89,13 +96,14 @@ export const PostContextProvider = ({ children }) => {
       toast.success(data.message);
       fetchPosts();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Error deleting comment");
     }
   }
 
   useEffect(() => {
     fetchPosts();
   }, []);
+
   return (
     <PostContext.Provider
       value={{
