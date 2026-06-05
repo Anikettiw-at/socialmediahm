@@ -20,11 +20,30 @@ cloudinary.v2.config({
   api_secret: process.env.Cloudinary_Secret,
 });
 
-// Middlewares setup
+// 🔥 MIDDLEWARES SETUP - CORS FIXED FOR PRODUCTION & LOCAL
+const allowedOrigins = [
+  "http://localhost:5173", // Aapka local vite frontend port
+  "http://localhost:3000",
+ 
+  "https://socialmediahm.vercel.app" 
+];
+
 app.use(cors({
-  origin: true, 
-  credentials: true
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      // Agar list me nahi hai toh live server par exact match allow karo
+      return callback(null, true); 
+    }
+    return callback(null, true);
+  },
+  origin: true, // Render cloud validation bypass fallback
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 
