@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { PostData } from "../context/PostContext";
 import PostCard from "../components/PostCard";
-import { FaArrowDownLong, FaArrowUp, FaGrid3X3, FaFilm } from "react-icons/fa6";
+import { FaArrowDownLong, FaArrowUp } from "react-icons/fa6";
 import axios from "axios";
 import { Loading } from "../components/Loading";
 import { UserData } from "../context/UserContext";
@@ -11,24 +11,19 @@ import { SocketData } from "../context/SocketContext";
 
 const UserAccount = ({ user: loggedInUser }) => {
   const navigate = useNavigate();
-  const { posts, reels } = PostData();
-  const [user, setUser] = useState([]);
-  const params = useParams();
-  const [loading, setLoading] = useState(true);
-  const [type, setType] = useState("post");
-  const [index, setIndex] = useState(0);
-  const [followed, setFollowed] = useState(false);
-  const [show, setShow] = useState(false);
-  const [show1, setShow1] = useState(false);
-  const [followersData, setFollowersData] = useState([]);
-  const [followingsData, setFollowingsData] = useState([]);
 
-  const { followUser } = UserData();
-  const { onlineUsers } = SocketData();
+  const { posts, reels } = PostData();
+
+  const [user, setUser] = useState([]);
+
+  const params = useParams();
+
+  const [loading, setLoading] = useState(true);
 
   async function fetchUser() {
     try {
       const { data } = await axios.get("/api/user/" + params.id);
+
       setUser(data);
       setLoading(false);
     } catch (error) {
@@ -37,40 +32,67 @@ const UserAccount = ({ user: loggedInUser }) => {
     }
   }
 
+  console.log(user);
+
   useEffect(() => {
     fetchUser();
   }, [params.id]);
 
-  let myPosts = posts && user._id ? posts.filter((post) => post.owner._id === user._id) : [];
-  let myReels = reels && user._id ? reels.filter((reel) => reel.owner._id === user._id) : [];
+  let myPosts;
+
+  if (posts) {
+    myPosts = posts.filter((post) => post.owner._id === user._id);
+  }
+  let myReels;
+
+  if (reels) {
+    myReels = reels.filter((reel) => reel.owner._id === user._id);
+  }
+
+  const [type, setType] = useState("post");
+
+  const [index, setIndex] = useState(0);
 
   const prevReel = () => {
-    if (index === 0) return null;
+    if (index === 0) {
+      console.log("null");
+      return null;
+    }
     setIndex(index - 1);
   };
-
   const nextReel = () => {
-    if (index === myReels.length - 1) return null;
+    if (index === myReels.length - 1) {
+      console.log("null");
+      return null;
+    }
     setIndex(index + 1);
   };
+
+  const [followed, setFollowed] = useState(false);
+
+  const { followUser } = UserData();
 
   const followHandler = () => {
     setFollowed(!followed);
     followUser(user._id, fetchUser);
   };
 
+  const followers = user.followers;
+
   useEffect(() => {
-    if (user.followers && user.followers.includes(loggedInUser._id)) {
-      setFollowed(true);
-    } else {
-      setFollowed(false);
-    }
-  }, [user, loggedInUser._id]);
+    if (followers && followers.includes(loggedInUser._id)) setFollowed(true);
+  }, [user]);
+
+  const [show, setShow] = useState(false);
+  const [show1, setShow1] = useState(false);
+
+  const [followersData, setFollowersData] = useState([]);
+  const [followingsData, setFollowingsData] = useState([]);
 
   async function followData() {
-    if (!user._id) return;
     try {
       const { data } = await axios.get("/api/user/followdata/" + user._id);
+
       setFollowersData(data.followers);
       setFollowingsData(data.followings);
     } catch (error) {
@@ -80,149 +102,141 @@ const UserAccount = ({ user: loggedInUser }) => {
 
   useEffect(() => {
     followData();
-  }, [user._id]);
+  }, [user]);
 
-  const isOnline = onlineUsers.includes(user._id);
-
+  const { onlineUsers } = SocketData();
   return (
-    <div className="bg-slate-50 min-h-screen pt-6 pb-16 px-4">
+    <>
       {loading ? (
         <Loading />
       ) : (
-        user && (
-          <div className="max-w-2xl mx-auto flex flex-col items-center gap-6">
-            
-            {/* MODAL WRAPPERS */}
-            {show && <Modal value={followersData} title={"Followers"} setShow={setShow} />}
-            {show1 && <Modal value={followingsData} title={"Followings"} setShow={setShow1} />}
+        <>
+          {user && (
+            <>
+              <div className="bg-gray-100 min-h-screen flex flex-col gap-4 items-center justify-center pt-3 pb-14">
+                {show && (
+                  <Modal
+                    value={followersData}
+                    title={"Followers"}
+                    setShow={setShow}
+                  />
+                )}
+                {show1 && (
+                  <Modal
+                    value={followingsData}
+                    title={"Followings"}
+                    setShow={setShow1}
+                  />
+                )}
+                <div className="bg-white flex justify-between gap-4 p-8 rounded-lg shadow-md max-w-md">
+                  <div className="image flex flex-col justify-between mb-4 gap-4">
+                    <img
+                      src={user.profilePic.url}
+                      alt=""
+                      className="w-[180px] h-[180px] rounded-full"
+                    />
+                  </div>
 
-            {/* PUBLIC USER INFO INTERFACE PROFILE CARD */}
-            <div className="w-full bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-slate-100 p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center justify-between">
-              
-              {/* IMAGE ELEMENT */}
-              <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-slate-100 shadow-inner shrink-0">
-                <img src={user.profilePic?.url} alt={user.name} className="w-full h-full object-cover" />
-              </div>
+                  <div className="flex flex-col gap-2">
+                    <p className="flex justify-center items-center text-gray-800 font-semibold">
+                      {user.name}{" "}
+                      {onlineUsers.includes(user._id) && (
+                        <div className="ml-5 ">
+                          <span className="font-bold text-green-400">
+                            Online
+                          </span>
+                        </div>
+                      )}
+                    </p>
+                    <p className="text-gray-500 text-sm">{user.email}</p>
+                    <p className="text-gray-500 text-sm">{user.gender}</p>
+                    <p
+                      className="text-gray-500 text-sm cursor-pointer"
+                      onClick={() => setShow(true)}
+                    >
+                      {user.followers.length} follower
+                    </p>
+                    <p
+                      className="text-gray-500 text-sm cursor-pointer"
+                      onClick={() => setShow1(true)}
+                    >
+                      {user.followings.length} following
+                    </p>
 
-              {/* SPECIFICATION DETAILS BLOCK */}
-              <div className="flex-1 w-full flex flex-col gap-4 text-center sm:text-left">
-                <div>
-                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
-                    <h2 className="text-xl font-bold text-slate-800 tracking-tight">{user.name}</h2>
-                    {isOnline && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full ring-1 ring-emerald-500/20">
-                        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                        Online
-                      </span>
+                    {user._id === loggedInUser._id ? (
+                      ""
+                    ) : (
+                      <button
+                        onClick={followHandler}
+                        className={`py-2 px-5 text-white rounded-md ${
+                          followed ? "bg-red-500" : "bg-blue-400"
+                        }`}
+                      >
+                        {followed ? "UnFollow" : "Follow"}
+                      </button>
                     )}
                   </div>
-                  <p className="text-xs text-slate-400 mt-0.5">{user.email} • <span className="capitalize">{user.gender}</span></p>
                 </div>
 
-                {/* COUNTERS HUB */}
-                <div className="flex items-center justify-center sm:justify-start gap-6 border-y border-slate-100 py-3 my-1">
-                  <div>
-                    <span className="block text-base font-bold text-slate-800">{myPosts.length}</span>
-                    <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Posts</span>
-                  </div>
-                  <div onClick={() => setShow(true)} className="cursor-pointer group">
-                    <span className="block text-base font-bold text-slate-800 group-hover:text-blue-500 transition-colors">{user.followers?.length || 0}</span>
-                    <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block group-hover:text-blue-500 transition-colors">Followers</span>
-                  </div>
-                  <div onClick={() => setShow1(true)} className="cursor-pointer group">
-                    <span className="block text-base font-bold text-slate-800 group-hover:text-blue-500 transition-colors">{user.followings?.length || 0}</span>
-                    <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block group-hover:text-blue-500 transition-colors">Following</span>
-                  </div>
+                <div className="controls flex justify-center items-center bg-white p-4 rounded-md gap-7">
+                  <button onClick={() => setType("post")}>Posts</button>
+                  <button onClick={() => setType("reel")}>Reels</button>
                 </div>
 
-                {/* INTERACTION BUTTON CONTROLS */}
-                {user._id !== loggedInUser._id && (
-                  <div className="w-full sm:max-w-xs">
-                    <button
-                      onClick={followHandler}
-                      className={`w-full font-semibold py-2.5 rounded-xl text-xs transition-all shadow-sm ${
-                        followed
-                          ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200"
-                          : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-500/10"
-                      }`}
-                    >
-                      {followed ? "Following" : "Follow"}
-                    </button>
-                  </div>
+                {type === "post" && (
+                  <>
+                    {myPosts && myPosts.length > 0 ? (
+                      myPosts.map((e) => (
+                        <PostCard type={"post"} value={e} key={e._id} />
+                      ))
+                    ) : (
+                      <p>No Post Yet</p>
+                    )}
+                  </>
+                )}
+                {type === "reel" && (
+                  <>
+                    {myReels && myReels.length > 0 ? (
+                      <div className="flex gap-3 justify-center items-center">
+                        <PostCard
+                          type={"reel"}
+                          value={myReels[index]}
+                          key={myReels[index]._id}
+                        />
+                        <div className="button flex flex-col justify-center items-center gap-6">
+                          {index === 0 ? (
+                            ""
+                          ) : (
+                            <button
+                              className="bg-gray-500 text-white py-5 px-5 rounded-full"
+                              onClick={prevReel}
+                            >
+                              <FaArrowUp />
+                            </button>
+                          )}
+                          {index === myReels.length - 1 ? (
+                            ""
+                          ) : (
+                            <button
+                              className="bg-gray-500 text-white py-5 px-5 rounded-full"
+                              onClick={nextReel}
+                            >
+                              <FaArrowDownLong />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <p>No Reels Yet</p>
+                    )}
+                  </>
                 )}
               </div>
-
-            </div>
-
-            {/* NAVIGATION TABS TRACK */}
-            <div className="w-full flex border-b border-slate-200">
-              <button 
-                onClick={() => setType("post")}
-                className={`flex-1 py-3 text-sm font-semibold tracking-wide flex items-center justify-center gap-2 border-b-2 transition-all ${type === "post" ? "border-slate-800 text-slate-900" : "border-transparent text-slate-400 hover:text-slate-600"}`}
-              >
-                <FaGrid3X3 className="w-3.5 h-3.5" /> Posts
-              </button>
-              <button 
-                onClick={() => setType("reel")}
-                className={`flex-1 py-3 text-sm font-semibold tracking-wide flex items-center justify-center gap-2 border-b-2 transition-all ${type === "reel" ? "border-slate-800 text-slate-900" : "border-transparent text-slate-400 hover:text-slate-600"}`}
-              >
-                <FaFilm className="w-3.5 h-3.5" /> Reels
-              </button>
-            </div>
-
-            {/* STREAM RENDER LAYER */}
-            <div className="w-full flex flex-col gap-6 justify-center items-center">
-              {type === "post" && (
-                <>
-                  {myPosts && myPosts.length > 0 ? (
-                    myPosts.map((e) => (
-                      <PostCard type={"post"} value={e} key={e._id} />
-                    ))
-                  ) : (
-                    <div className="text-center py-10 text-slate-400 text-sm font-medium">No Posts Yet</div>
-                  )}
-                </>
-              )}
-
-              {type === "reel" && (
-                <>
-                  {myReels && myReels.length > 0 ? (
-                    <div className="w-full flex flex-col md:flex-row gap-4 justify-center items-center">
-                      <PostCard
-                        type={"reel"}
-                        value={myReels[index]}
-                        key={myReels[index]._id}
-                      />
-                      <div className="flex flex-row md:flex-col justify-center items-center gap-3">
-                        {index !== 0 && (
-                          <button
-                            className="bg-slate-800 hover:bg-slate-900 text-white p-3.5 rounded-full shadow-lg transition-all hover:scale-105"
-                            onClick={prevReel}
-                          >
-                            <FaArrowUp className="w-4 h-4" />
-                          </button>
-                        )}
-                        {index !== myReels.length - 1 && (
-                          <button
-                            className="bg-slate-800 hover:bg-slate-900 text-white p-3.5 rounded-full shadow-lg transition-all hover:scale-105"
-                            onClick={nextReel}
-                          >
-                            <FaArrowDownLong className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-10 text-slate-400 text-sm font-medium">No Reels Yet</div>
-                  )}
-                </>
-              )}
-            </div>
-
-          </div>
-        )
+            </>
+          )}
+        </>
       )}
-    </div>
+    </>
   );
 };
 
