@@ -12,7 +12,7 @@ import { SocketData } from "../context/SocketContext";
 const UserAccount = ({ user: loggedInUser }) => {
   const navigate = useNavigate();
   const { posts, reels } = PostData();
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState(null);
   const params = useParams();
   const [loading, setLoading] = useState(true);
   const [type, setType] = useState("post");
@@ -41,8 +41,8 @@ const UserAccount = ({ user: loggedInUser }) => {
     fetchUser();
   }, [params.id]);
 
-  let myPosts = posts && user._id ? posts.filter((post) => post.owner._id === user._id) : [];
-  let myReels = reels && user._id ? reels.filter((reel) => reel.owner._id === user._id) : [];
+  let myPosts = posts && user?._id ? posts.filter((post) => post.owner?._id === user._id) : [];
+  let myReels = reels && user?._id ? reels.filter((reel) => reel.owner?._id === user._id) : [];
 
   const prevReel = () => {
     if (index === 0) return null;
@@ -56,33 +56,33 @@ const UserAccount = ({ user: loggedInUser }) => {
 
   const followHandler = () => {
     setFollowed(!followed);
-    followUser(user._id, fetchUser);
+    followUser(user?._id, fetchUser);
   };
 
   useEffect(() => {
-    if (user.followers && user.followers.includes(loggedInUser._id)) {
-      setFollowed(true);
-    } else {
-      setFollowed(false);
+    if (user?.followers && loggedInUser?._id) {
+      setFollowed(user.followers.includes(loggedInUser._id));
     }
-  }, [user, loggedInUser._id]);
+  }, [user, loggedInUser]);
 
   async function followData() {
-    if (!user._id) return;
+    if (!user?._id) return;
     try {
       const { data } = await axios.get("/api/user/followdata/" + user._id);
-      setFollowersData(data.followers);
-      setFollowingsData(data.followings);
+      setFollowersData(data.followers || []);
+      setFollowingsData(data.followings || []);
     } catch (error) {
       console.log(error);
     }
   }
 
   useEffect(() => {
-    followData();
-  }, [user._id]);
+    if (user?._id) {
+      followData();
+    }
+  }, [user?._id]);
 
-  const isOnline = onlineUsers.includes(user._id);
+  const isOnline = user?._id ? onlineUsers.includes(user._id) : false;
 
   return (
     <div className="bg-slate-50 min-h-screen pt-6 pb-16 px-4">
@@ -92,19 +92,15 @@ const UserAccount = ({ user: loggedInUser }) => {
         user && (
           <div className="max-w-2xl mx-auto flex flex-col items-center gap-6">
             
-            {/* MODAL WRAPPERS */}
             {show && <Modal value={followersData} title={"Followers"} setShow={setShow} />}
             {show1 && <Modal value={followingsData} title={"Followings"} setShow={setShow1} />}
 
-            {/* PUBLIC USER INFO INTERFACE PROFILE CARD */}
             <div className="w-full bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] border border-slate-100 p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center justify-between">
               
-              {/* IMAGE ELEMENT */}
               <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-slate-100 shadow-inner shrink-0">
                 <img src={user.profilePic?.url} alt={user.name} className="w-full h-full object-cover" />
               </div>
 
-              {/* SPECIFICATION DETAILS BLOCK */}
               <div className="flex-1 w-full flex flex-col gap-4 text-center sm:text-left">
                 <div>
                   <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
@@ -119,7 +115,6 @@ const UserAccount = ({ user: loggedInUser }) => {
                   <p className="text-xs text-slate-400 mt-0.5">{user.email} • <span className="capitalize">{user.gender}</span></p>
                 </div>
 
-                {/* COUNTERS HUB */}
                 <div className="flex items-center justify-center sm:justify-start gap-6 border-y border-slate-100 py-3 my-1">
                   <div>
                     <span className="block text-base font-bold text-slate-800">{myPosts.length}</span>
@@ -135,8 +130,7 @@ const UserAccount = ({ user: loggedInUser }) => {
                   </div>
                 </div>
 
-                {/* INTERACTION BUTTON CONTROLS */}
-                {user._id !== loggedInUser._id && (
+                {user._id !== loggedInUser?._id && (
                   <div className="w-full sm:max-w-xs">
                     <button
                       onClick={followHandler}
@@ -154,7 +148,6 @@ const UserAccount = ({ user: loggedInUser }) => {
 
             </div>
 
-            {/* NAVIGATION TABS TRACK */}
             <div className="w-full flex border-b border-slate-200">
               <button 
                 onClick={() => setType("post")}
@@ -170,7 +163,6 @@ const UserAccount = ({ user: loggedInUser }) => {
               </button>
             </div>
 
-            {/* STREAM RENDER LAYER */}
             <div className="w-full flex flex-col gap-6 justify-center items-center">
               {type === "post" && (
                 <>
@@ -191,7 +183,7 @@ const UserAccount = ({ user: loggedInUser }) => {
                       <PostCard
                         type={"reel"}
                         value={myReels[index]}
-                        key={myReels[index]._id}
+                        key={myReels[index]?._id}
                       />
                       <div className="flex flex-row md:flex-col justify-center items-center gap-3">
                         {index !== 0 && (
