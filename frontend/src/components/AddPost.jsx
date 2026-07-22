@@ -1,12 +1,35 @@
 import React, { useState } from "react";
+import axios from "axios"; // 1. Axios Import Add kar diya
 import { PostData } from "../context/PostContext";
 import { LoadingAnimation } from "./Loading";
 import { FaImage, FaFilm } from "react-icons/fa6";
+import { HiSparkles } from "react-icons/hi2"; // Premium AI icon ke liye
 
 const AddPost = ({ type }) => {
   const [caption, setCaption] = useState("");
   const [file, setFile] = useState("");
   const [filePrev, setFilePrev] = useState("");
+  const [aiTopic, setAiTopic] = useState("");
+  const [generating, setGenerating] = useState(false);
+
+  const handleGenerateWithAI = async () => {
+    if (!aiTopic.trim()) return alert("Pehle topic likho, e.g. 'my DSA journey'");
+    
+    setGenerating(true);
+    try {
+      const res = await axios.post("http://localhost:7000/api/ai/generate-post", { 
+        topic: aiTopic 
+      });
+      
+      // Direct caption state me AI post fill ho jayegi
+      setCaption(res.data.post); 
+    } catch (err) {
+      console.error(err);
+      alert("AI generation failed, check backend server");
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   const { addPost, addLoading } = PostData();
 
@@ -36,11 +59,31 @@ const AddPost = ({ type }) => {
     <div className="w-full bg-white rounded-2xl p-4 sm:p-5 border border-slate-100">
       <form onSubmit={submitHandler} className="flex flex-col gap-4">
         
-        {/* Caption Field */}
-        <div className="w-full">
+        {/* 🌟 2. AI Generator Bar (Caption Field ke Thik Upar) */}
+        <div className="flex flex-col sm:flex-row gap-2 bg-gradient-to-r from-purple-50 to-indigo-50 p-2.5 rounded-xl border border-purple-100">
           <input
             type="text"
-            className="w-full px-4 py-3 text-sm rounded-xl bg-slate-50 border border-slate-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-medium"
+            className="flex-1 px-3 py-2 text-xs sm:text-sm rounded-lg bg-white border border-purple-200/60 text-slate-700 placeholder-slate-400 focus:outline-none focus:border-purple-500 font-medium"
+            placeholder="AI Topic (e.g. 'My new MERN project', 'DSA practice')..."
+            value={aiTopic}
+            onChange={(e) => setAiTopic(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={handleGenerateWithAI}
+            disabled={generating}
+            className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-purple-500/10 transition-all disabled:opacity-50"
+          >
+            <HiSparkles className="w-4 h-4 text-yellow-300" />
+            <span>{generating ? "Generating..." : "Generate AI"}</span>
+          </button>
+        </div>
+
+        {/* Caption Field */}
+        <div className="w-full">
+          <textarea
+            rows="3"
+            className="w-full px-4 py-3 text-sm rounded-xl bg-slate-50 border border-slate-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-medium resize-none"
             placeholder={type === "post" ? "What's on your mind? Add a caption..." : "Write a caption for your reel..."}
             value={caption}
             onChange={(e) => setCaption(e.target.value)}

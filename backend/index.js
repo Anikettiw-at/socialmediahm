@@ -1,5 +1,13 @@
-import express from "express";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+
+import express from "express";
 import { connectDb } from "./database/db.js";
 import cloudinary from "cloudinary";
 import cookieParser from "cookie-parser";
@@ -7,11 +15,14 @@ import { Chat } from "./models/ChatModel.js";
 import { isAuth } from "./middlewares/isAuth.js";
 import { User } from "./models/userModel.js";
 import { app, server } from "./socket/socket.js";
-import path from "path";
 import cors from "cors";
 
-// Env config sabse upar
-dotenv.config();
+// Routes imports
+import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import postRoutes from "./routes/postRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 
 // Cloudinary configuration
 cloudinary.v2.config({
@@ -24,17 +35,14 @@ cloudinary.v2.config({
 const allowedOrigins = [
   "http://localhost:5173", // Aapka local vite frontend port
   "http://localhost:3000",
- 
-  "https://socialmediahm.vercel.app" 
+  "https://socialmediahm.vercel.app"
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) === -1) {
-      // Agar list me nahi hai toh live server par exact match allow karo
-      return callback(null, true); 
+      return callback(null, true);
     }
     return callback(null, true);
   },
@@ -44,6 +52,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
 }));
 
+// Body parsing middlewares (Important: ye routes ke pehle hona chahiye)
 app.use(express.json());
 app.use(cookieParser());
 
@@ -93,17 +102,12 @@ app.get("/api/user/all", isAuth, async (req, res) => {
   }
 });
 
-// Importing routes
-import userRoutes from "./routes/userRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
-import postRoutes from "./routes/postRoutes.js";
-import messageRoutes from "./routes/messageRoutes.js";
-
-// Using routes
+// Using routes (express.json ke baad mount kiya hai)
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/post", postRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Root route to check deployment status on Render
 app.get("/", (req, res) => {
