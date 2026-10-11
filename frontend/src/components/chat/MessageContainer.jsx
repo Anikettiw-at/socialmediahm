@@ -71,9 +71,9 @@ const MessageContainer = ({ selectedChat, setChats, isOnline, onBack }) => {
   if (!selectedChat) return null;
 
   return (
-    <div className="flex flex-col h-full w-full bg-white">
+    <div className="flex flex-col h-full w-full bg-surface">
       {/* Chat Header */}
-      <div className="flex w-full h-16 items-center gap-3 px-3 sm:px-4 border-b border-slate-100 bg-white shrink-0">
+      <div className="flex w-full h-16 items-center gap-3 px-3 sm:px-4 border-b border-slate-100 bg-surface shrink-0">
         <button
           onClick={onBack}
           aria-label="Back to conversations"
@@ -89,7 +89,7 @@ const MessageContainer = ({ selectedChat, setChats, isOnline, onBack }) => {
               alt=""
             />
             {isOnline && (
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></span>
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-surface"></span>
             )}
           </div>
           <div className="flex flex-col min-w-0">
@@ -106,7 +106,7 @@ const MessageContainer = ({ selectedChat, setChats, isOnline, onBack }) => {
       {/* Messages Stream Wrapper */}
       <div className="flex-1 relative flex flex-col bg-slate-50 min-h-0">
         {loading ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10 text-brand-600">
+          <div className="absolute inset-0 flex items-center justify-center bg-surface/80 backdrop-blur-sm z-10 text-brand-600">
             <LoadingAnimation />
           </div>
         ) : (

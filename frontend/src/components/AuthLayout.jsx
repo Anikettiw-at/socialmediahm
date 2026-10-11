@@ -3,6 +3,7 @@ import { HiSparkles } from "react-icons/hi2";
 import { IoChatbubbles, IoImages } from "react-icons/io5";
 import { FaUserFriends } from "react-icons/fa";
 import Logo from "./Logo";
+import ThemeToggle from "./ThemeToggle";
 
 const features = [
   { icon: IoImages, text: "Share photos & short reels" },
@@ -13,7 +14,7 @@ const features = [
 
 const AuthLayout = ({ title, subtitle, children, footer }) => {
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-white">
+    <div className="min-h-screen grid lg:grid-cols-2 bg-surface">
       {/* BRAND PANEL */}
       <div className="hidden lg:flex relative overflow-hidden bg-gradient-to-br from-brand-700 via-brand-600 to-fuchsia-500 p-12 flex-col justify-between text-white">
         <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/10 blur-2xl pointer-events-none" />
@@ -29,7 +30,7 @@ const AuthLayout = ({ title, subtitle, children, footer }) => {
             <br />
             Stay connected.
           </h2>
-          <p className="mt-4 text-brand-100 text-base leading-relaxed">
+          <p className="mt-4 text-white/80 text-base leading-relaxed">
             A modern social space to post, watch reels and chat with the people you care about.
           </p>
 
@@ -49,7 +50,8 @@ const AuthLayout = ({ title, subtitle, children, footer }) => {
       </div>
 
       {/* FORM PANEL */}
-      <div className="flex flex-col items-center justify-center px-5 py-10 sm:px-10 bg-slate-50 lg:bg-white">
+      <div className="relative flex flex-col items-center justify-center px-5 py-10 sm:px-10 bg-slate-50 lg:bg-surface">
+        <ThemeToggle className="absolute top-4 right-4 p-2.5 rounded-full" />
         <div className="w-full max-w-sm">
           <div className="lg:hidden mb-8 flex justify-center">
             <Logo />

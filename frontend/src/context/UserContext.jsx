@@ -129,7 +129,16 @@ export const UserContextProvider = ({ children }) => {
       }}
     >
       {children}
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          // Follows the light/dark theme tokens from index.css
+          style: {
+            background: "rgb(var(--surface))",
+            color: "rgb(var(--slate-800))",
+            border: "1px solid rgb(var(--slate-200))",
+          },
+        }}
+      />
     </UserContext.Provider>
   );
 };

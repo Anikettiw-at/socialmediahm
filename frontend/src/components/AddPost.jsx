@@ -92,7 +92,7 @@ const AddPost = ({ type }) => {
           <div className="flex flex-col sm:flex-row gap-2 p-2.5 rounded-xl bg-gradient-to-r from-brand-50 to-fuchsia-50 border border-brand-100 animate-fadeIn">
             <input
               type="text"
-              className="input py-2 bg-white"
+              className="input py-2 bg-surface"
               placeholder="Topic, e.g. 'My new MERN project'"
               value={aiTopic}
               maxLength={200}
@@ -118,7 +118,7 @@ const AddPost = ({ type }) => {
 
         {/* Media preview */}
         {filePrev && (
-          <div className="relative overflow-hidden rounded-xl bg-slate-950 flex items-center justify-center">
+          <div className="relative overflow-hidden rounded-xl bg-black flex items-center justify-center">
             {isPost ? (
               <img src={filePrev} alt="Preview" className="w-full object-contain max-h-[320px]" />
             ) : (

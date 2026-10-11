@@ -20,7 +20,7 @@ const Chat = ({ chat, setSelectedChat, isOnline, isSelected }) => {
       <div className="relative shrink-0">
         <img src={user.profilePic?.url} alt="" className="w-12 h-12 rounded-full object-cover" />
         {isOnline && (
-          <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white"></span>
+          <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-surface"></span>
         )}
       </div>
 

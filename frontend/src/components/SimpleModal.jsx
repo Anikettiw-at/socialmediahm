@@ -5,11 +5,11 @@ const SimpleModal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
   return (
     <div
-      className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 animate-fadeIn"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 animate-fadeIn"
       onClick={onClose}
     >
       <div
-        className="bg-white w-full sm:max-w-xs rounded-t-3xl sm:rounded-2xl shadow-lift p-5 animate-popIn"
+        className="bg-surface w-full sm:max-w-xs rounded-t-3xl sm:rounded-2xl shadow-lift p-5 animate-popIn"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">

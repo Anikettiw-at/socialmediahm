@@ -13,7 +13,7 @@ const ReelViewer = ({ reels }) => {
   const isLast = current === reels.length - 1;
 
   const navBtn =
-    "w-11 h-11 rounded-full flex items-center justify-center shadow-soft transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white text-slate-700 hover:bg-brand-600 hover:text-white disabled:hover:bg-white disabled:hover:text-slate-700";
+    "w-11 h-11 rounded-full flex items-center justify-center shadow-soft transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-surface text-slate-700 hover:bg-brand-600 hover:text-white disabled:hover:bg-surface disabled:hover:text-slate-700";
 
   return (
     <div className="flex items-center justify-center gap-3 sm:gap-4 w-full">

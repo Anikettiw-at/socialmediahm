@@ -1,5 +1,10 @@
 /** @type {import('tailwindcss').Config} */
+// Theme colors are CSS variables (see index.css) so the whole UI flips with the `dark` class
+const v = (name) => `rgb(var(--${name}) / <alpha-value>)`;
+const scale = (prefix, steps) => Object.fromEntries(steps.map((n) => [n, v(`${prefix}-${n}`)]));
+
 export default {
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -7,10 +12,12 @@ export default {
         sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       colors: {
+        surface: v("surface"),
+        slate: scale("slate", [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]),
         brand: {
-          50: "#f3f1ff",
-          100: "#e9e5ff",
-          200: "#d5ceff",
+          50: v("brand-50"),
+          100: v("brand-100"),
+          200: v("brand-200"),
           300: "#b6a6ff",
           400: "#9274ff",
           500: "#7344fb",

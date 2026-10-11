@@ -3,6 +3,46 @@
 @tailwind utilities;
 
 @layer base {
+  /* Theme tokens as "R G B" channels so Tailwind opacity modifiers keep working */
+  :root {
+    --surface: 255 255 255;
+    --slate-50: 248 250 252;
+    --slate-100: 241 245 249;
+    --slate-200: 226 232 240;
+    --slate-300: 203 213 225;
+    --slate-400: 148 163 184;
+    --slate-500: 100 116 139;
+    --slate-600: 71 85 105;
+    --slate-700: 51 65 85;
+    --slate-800: 30 41 59;
+    --slate-900: 15 23 42;
+    --slate-950: 2 6 23;
+    --brand-50: 243 241 255;
+    --brand-100: 233 229 255;
+    --brand-200: 213 206 255;
+    color-scheme: light;
+  }
+
+  /* Dark theme: the slate scale flips (light text, dark backgrounds) */
+  .dark {
+    --surface: 17 24 39;
+    --slate-50: 9 13 24;
+    --slate-100: 30 38 54;
+    --slate-200: 41 50 68;
+    --slate-300: 59 72 94;
+    --slate-400: 100 116 139;
+    --slate-500: 148 163 184;
+    --slate-600: 186 197 212;
+    --slate-700: 214 222 233;
+    --slate-800: 232 237 244;
+    --slate-900: 245 247 250;
+    --slate-950: 255 255 255;
+    --brand-50: 37 28 76;
+    --brand-100: 48 36 100;
+    --brand-200: 70 52 140;
+    color-scheme: dark;
+  }
+
   html {
     -webkit-tap-highlight-color: transparent;
   }
@@ -16,11 +56,11 @@
 
 @layer components {
   .card {
-    @apply bg-white rounded-2xl border border-slate-200/70 shadow-soft;
+    @apply bg-surface rounded-2xl border border-slate-200/70 shadow-soft;
   }
 
   .input {
-    @apply w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-800 placeholder-slate-400 transition-all focus:outline-none focus:bg-white focus:border-brand-400 focus:ring-4 focus:ring-brand-100;
+    @apply w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-800 placeholder-slate-400 transition-all focus:outline-none focus:bg-surface focus:border-brand-400 focus:ring-4 focus:ring-brand-100;
   }
 
   .btn {
@@ -33,7 +73,7 @@
     @apply btn bg-slate-100 text-slate-700 hover:bg-slate-200;
   }
   .btn-outline {
-    @apply btn border border-slate-200 bg-white text-slate-700 hover:bg-slate-50;
+    @apply btn border border-slate-200 bg-surface text-slate-700 hover:bg-slate-50;
   }
   .btn-danger {
     @apply btn bg-rose-50 text-rose-600 hover:bg-rose-100;
@@ -62,4 +102,33 @@
 }
 .scroll-thin::-webkit-scrollbar-thumb {
   @apply bg-slate-200 rounded-full;
+}
+
+/* Dark-mode touch-ups for the few fixed (non-token) colors */
+.dark .text-brand-600,
+.dark .text-brand-700,
+.dark .hover\:text-brand-600:hover,
+.dark .hover\:text-brand-700:hover,
+.dark .hover\:text-brand-800:hover,
+.dark .group:hover .group-hover\:text-brand-600 {
+  color: #b9a8ff;
+}
+.dark .bg-rose-50 {
+  background-color: rgb(244 63 94 / 0.12);
+}
+.dark .hover\:bg-rose-50:hover,
+.dark .hover\:bg-rose-100:hover {
+  background-color: rgb(244 63 94 / 0.2);
+}
+.dark .to-fuchsia-50 {
+  --tw-gradient-to: rgb(var(--brand-50)) var(--tw-gradient-to-position);
+}
+.dark .ring-emerald-100 {
+  --tw-ring-color: rgb(16 185 129 / 0.3);
+}
+.dark .shadow-soft {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 16px rgb(0 0 0 / 0.25);
+}
+.dark .shadow-lift {
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.5);
 }

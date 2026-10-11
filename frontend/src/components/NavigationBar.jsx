@@ -7,6 +7,7 @@ import { IoChatbubbleEllipses, IoChatbubbleEllipsesOutline } from "react-icons/i
 import { RiAccountCircleFill, RiAccountCircleLine } from "react-icons/ri";
 import { UserData } from "../context/UserContext";
 import Logo from "./Logo";
+import ThemeToggle from "./ThemeToggle";
 
 const links = [
   { to: "/", label: "Home", icon: AiOutlineHome, activeIcon: AiFillHome },
@@ -22,7 +23,7 @@ const NavigationBar = () => {
   return (
     <>
       {/* DESKTOP / TABLET SIDEBAR */}
-      <aside className="hidden md:flex fixed inset-y-0 left-0 z-40 w-20 lg:w-64 flex-col border-r border-slate-200/70 bg-white/90 backdrop-blur-xl px-3 lg:px-4 py-6">
+      <aside className="hidden md:flex fixed inset-y-0 left-0 z-40 w-20 lg:w-64 flex-col border-r border-slate-200/70 bg-surface/90 backdrop-blur-xl px-3 lg:px-4 py-6">
         <div className="px-2 mb-8">
           <span className="lg:hidden">
             <Logo compact />
@@ -57,6 +58,7 @@ const NavigationBar = () => {
               )}
             </NavLink>
           ))}
+          <ThemeToggle withLabel className="justify-center lg:justify-start px-3 py-3" />
         </nav>
 
         {user && (
@@ -67,7 +69,7 @@ const NavigationBar = () => {
             <img
               src={user.profilePic?.url}
               alt=""
-              className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow"
+              className="w-10 h-10 rounded-full object-cover ring-2 ring-surface shadow"
             />
             <div className="hidden lg:block min-w-0">
               <p className="text-sm font-bold text-slate-800 truncate">{user.name}</p>
@@ -78,21 +80,24 @@ const NavigationBar = () => {
       </aside>
 
       {/* MOBILE TOP BAR */}
-      <header className="md:hidden sticky top-0 z-40 flex items-center justify-between h-14 px-4 bg-white/85 backdrop-blur-xl border-b border-slate-200/70">
+      <header className="md:hidden sticky top-0 z-40 flex items-center justify-between h-14 px-4 bg-surface/85 backdrop-blur-xl border-b border-slate-200/70">
         <Logo />
-        {user && (
-          <NavLink to="/account">
-            <img
-              src={user.profilePic?.url}
-              alt=""
-              className="w-8 h-8 rounded-full object-cover ring-2 ring-brand-100"
-            />
-          </NavLink>
-        )}
+        <div className="flex items-center gap-2">
+          <ThemeToggle className="p-2 rounded-full" />
+          {user && (
+            <NavLink to="/account">
+              <img
+                src={user.profilePic?.url}
+                alt=""
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-brand-100"
+              />
+            </NavLink>
+          )}
+        </div>
       </header>
 
       {/* MOBILE BOTTOM TAB BAR */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/90 backdrop-blur-xl border-t border-slate-200/70 pb-[env(safe-area-inset-bottom)]">
+      <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-surface/90 backdrop-blur-xl border-t border-slate-200/70 pb-[env(safe-area-inset-bottom)]">
         <div className="flex justify-around items-center h-16">
           {links.map(({ to, label, icon: Icon, activeIcon: ActiveIcon }) => (
             <NavLink

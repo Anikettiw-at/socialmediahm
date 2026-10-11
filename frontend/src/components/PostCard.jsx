@@ -126,7 +126,7 @@ const PostCard = ({ type, value }) => {
               className="w-10 h-10 rounded-full object-cover ring-2 ring-brand-100"
             />
             {onlineUsers?.includes(value.owner?._id) && (
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></span>
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-surface"></span>
             )}
           </div>
           <div className="min-w-0">
@@ -179,7 +179,7 @@ const PostCard = ({ type, value }) => {
       </div>
 
       {/* MEDIA */}
-      <div className="relative bg-slate-950 flex items-center justify-center">
+      <div className="relative bg-black flex items-center justify-center">
         {type === "post" ? (
           <img
             src={value.post?.url}

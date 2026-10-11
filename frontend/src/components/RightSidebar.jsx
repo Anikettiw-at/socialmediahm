@@ -38,7 +38,7 @@ const RightSidebar = () => {
               {online.map((p) => (
                 <Link key={p._id} to={`/user/${p._id}`} title={p.name} className="relative">
                   <img src={p.profilePic?.url} alt={p.name} className="w-11 h-11 rounded-full object-cover ring-2 ring-emerald-100" />
-                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
+                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-surface" />
                 </Link>
               ))}
             </div>

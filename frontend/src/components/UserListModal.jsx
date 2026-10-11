@@ -6,11 +6,11 @@ import { IoClose } from "react-icons/io5";
 const UserListModal = ({ title, users, onClose, emptyText, children }) => {
   return (
     <div
-      className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 animate-fadeIn"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 animate-fadeIn"
       onClick={onClose}
     >
       <div
-        className="bg-white w-full sm:w-[380px] rounded-t-3xl sm:rounded-2xl shadow-lift max-h-[75vh] sm:max-h-[460px] flex flex-col animate-popIn"
+        className="bg-surface w-full sm:w-[380px] rounded-t-3xl sm:rounded-2xl shadow-lift max-h-[75vh] sm:max-h-[460px] flex flex-col animate-popIn"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">

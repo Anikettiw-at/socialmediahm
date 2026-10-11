@@ -18,11 +18,11 @@ export const ProfileHeader = ({ user, avatarSlot, nameSlot, isOnline, postsCount
               <img
                 src={user.profilePic?.url}
                 alt=""
-                className="w-full h-full rounded-full object-cover ring-4 ring-white shadow-lift bg-white"
+                className="w-full h-full rounded-full object-cover ring-4 ring-surface shadow-lift bg-surface"
               />
             )}
             {isOnline && (
-              <span className="absolute bottom-1.5 right-1.5 w-4 h-4 bg-emerald-500 rounded-full border-[3px] border-white" />
+              <span className="absolute bottom-1.5 right-1.5 w-4 h-4 bg-emerald-500 rounded-full border-[3px] border-surface" />
             )}
           </div>
 
@@ -55,7 +55,7 @@ const Stat = ({ value, label, onClick }) => {
   return (
     <Tag
       onClick={onClick}
-      className={`py-3 text-center ${onClick ? "hover:bg-white transition-colors first:rounded-l-xl last:rounded-r-xl" : ""}`}
+      className={`py-3 text-center ${onClick ? "hover:bg-surface transition-colors first:rounded-l-xl last:rounded-r-xl" : ""}`}
     >
       <p className="text-lg font-extrabold text-slate-900">{value}</p>
       <p className="text-xs font-medium text-slate-500">{label}</p>

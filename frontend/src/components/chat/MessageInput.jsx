@@ -42,7 +42,7 @@ const MessageInput = ({ setMessages, selectedChat }) => {
   };
 
   return (
-    <div className="p-3 sm:p-4 bg-white border-t border-slate-100">
+    <div className="p-3 sm:p-4 bg-surface border-t border-slate-100">
       <form onSubmit={handleMessage} className="flex items-center gap-2">
         <input
           type="text"

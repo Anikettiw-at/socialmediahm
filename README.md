@@ -44,6 +44,25 @@ Create an account (any email works) and start posting, following and chatting.
   </tr>
 </table>
 
+### 🌙 Dark mode
+
+![Home feed in dark mode](docs/screenshots/dark/feed.png)
+
+<table>
+  <tr>
+    <td width="50%"><b>Chat</b><br><img src="docs/screenshots/dark/chat.png" alt="Chat in dark mode"></td>
+    <td width="50%"><b>Login</b><br><img src="docs/screenshots/dark/login.png" alt="Login in dark mode"></td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="docs/screenshots/dark/mobile-feed.png" alt="Mobile feed in dark mode" width="30%">
+  &nbsp;
+  <img src="docs/screenshots/dark/mobile-chat.png" alt="Mobile chat in dark mode" width="30%">
+  &nbsp;
+  <img src="docs/screenshots/dark/mobile-profile.png" alt="Mobile profile in dark mode" width="30%">
+</p>
+
 ### 📱 Mobile
 
 <p align="center">
@@ -69,6 +88,7 @@ Create an account (any email works) and start posting, following and chatting.
 | 🔎 | **Discover people** | Search users by name and get "Suggested for you" recommendations |
 | 👤 | **Profile management** | Change your profile photo, name and password |
 | 📱 | **Responsive UI** | Sidebar navigation on desktop, bottom tab bar on mobile |
+| 🌙 | **Dark mode** | Light and dark themes. Follows your system setting by default, and your choice is remembered |
 
 ## 🛠 Tech stack
 

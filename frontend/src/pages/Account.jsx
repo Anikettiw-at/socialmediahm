@@ -106,12 +106,12 @@ const Account = ({ user }) => {
               <img
                 src={user.profilePic?.url}
                 alt=""
-                className="w-full h-full rounded-full object-cover ring-4 ring-white shadow-lift bg-white"
+                className="w-full h-full rounded-full object-cover ring-4 ring-surface shadow-lift bg-surface"
               />
               <span className="absolute inset-0 rounded-full bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
                 <IoCamera className="w-7 h-7" />
               </span>
-              <span className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-brand-600 text-white border-[3px] border-white flex items-center justify-center sm:hidden">
+              <span className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-brand-600 text-white border-[3px] border-surface flex items-center justify-center sm:hidden">
                 <IoCamera className="w-4 h-4" />
               </span>
               <input type="file" accept="image/*" className="hidden" onChange={changeFileHandler} />
