@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { BsChatFill, BsThreeDotsVertical } from "react-icons/bs";
-import { IoHeartOutline, IoHeartSharp } from "react-icons/io5";
+import { BsThreeDots } from "react-icons/bs";
+import { IoHeartOutline, IoHeartSharp, IoChatbubbleOutline, IoSend } from "react-icons/io5";
 import { UserData } from "../context/UserContext";
 import { PostData } from "../context/PostContext";
-import { format } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { Link } from "react-router-dom";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import SimpleModal from "./SimpleModal";
 import { LoadingAnimation } from "./Loading";
 import toast from "react-hot-toast";
@@ -19,7 +19,9 @@ const PostCard = ({ type, value }) => {
   const { user } = UserData();
   const { likePost, addComment, deletePost, loading, fetchPosts } = PostData();
 
-  const formatDate = value?.createdAt ? format(new Date(value.createdAt), "MMMM do") : "";
+  const timeAgo = value?.createdAt
+    ? formatDistanceToNow(new Date(value.createdAt), { addSuffix: true })
+    : "";
 
   useEffect(() => {
     if (value?.likes && user?._id) {
@@ -82,150 +84,148 @@ const PostCard = ({ type, value }) => {
 
   if (!value || !user) return null;
 
+  const likesCount = value.likes?.length || 0;
+  const commentsCount = value.comments?.length || 0;
+
   return (
-    <div className="w-full bg-white rounded-2xl border border-slate-100 p-4 sm:p-5 transition-all">
-      <SimpleModal isOpen={showModal} onClose={closeModal}>
-        <LikeModal isOpen={open} onClose={oncloseLIke} id={value._id} />
-        <div className="flex flex-col gap-2 p-2 min-w-[120px]">
-          <button
-            onClick={editHandler}
-            className="w-full py-2 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold rounded-xl text-xs transition-colors"
-          >
-            Edit Post
+    <article className="card w-full overflow-hidden animate-fadeIn">
+      <SimpleModal isOpen={showModal} onClose={closeModal} title="Post options">
+        <div className="flex flex-col gap-2">
+          <button onClick={editHandler} className="btn-secondary w-full justify-start">
+            <MdEdit className="w-4 h-4" /> Edit caption
           </button>
-          <button
-            onClick={deleteHandler}
-            className="w-full py-2 px-4 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-xl text-xs transition-colors"
-            disabled={loading}
-          >
-            {loading ? <LoadingAnimation /> : "Delete Post"}
+          <button onClick={deleteHandler} className="btn-danger w-full justify-start" disabled={loading}>
+            {loading ? (
+              <LoadingAnimation />
+            ) : (
+              <>
+                <MdDelete className="w-4 h-4" /> Delete post
+              </>
+            )}
           </button>
         </div>
       </SimpleModal>
 
-      <div className="flex items-center justify-between mb-4">
-        <Link className="flex items-center gap-3 group" to={`/user/${value.owner?._id}`}>
-          <div className="relative">
+      {open && <LikeModal onClose={oncloseLIke} id={value._id} />}
+
+      {/* HEADER */}
+      <div className="flex items-center justify-between px-4 sm:px-5 pt-4">
+        <Link className="flex items-center gap-3 group min-w-0" to={`/user/${value.owner?._id}`}>
+          <div className="relative shrink-0">
             <img
               src={value.owner?.profilePic?.url}
               alt=""
-              className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100"
+              className="w-10 h-10 rounded-full object-cover ring-2 ring-brand-100"
             />
             {onlineUsers?.includes(value.owner?._id) && (
-              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white animate-pulse"></span>
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></span>
             )}
           </div>
-          <div>
-            <p className="text-sm font-bold text-slate-800 group-hover:text-blue-600 transition-colors">{value.owner?.name}</p>
-            <p className="text-[11px] text-slate-400 font-medium">{formatDate}</p>
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-slate-900 group-hover:text-brand-600 transition-colors truncate">
+              {value.owner?.name}
+            </p>
+            <p className="text-xs text-slate-400">{timeAgo}</p>
           </div>
         </Link>
 
         {value.owner?._id === user._id && (
           <button
             onClick={() => setShowModal(true)}
-            className="text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl p-2 transition-all"
+            aria-label="Post options"
+            className="text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-full p-2 transition-all"
           >
-            <BsThreeDotsVertical className="w-4 h-4" />
+            <BsThreeDots className="w-5 h-5" />
           </button>
         )}
       </div>
 
-      <div className="mb-3 px-1">
+      {/* CAPTION */}
+      <div className="px-4 sm:px-5 pt-3 pb-3">
         {showInput ? (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <input
-              className="flex-1 px-3 py-1.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-700 focus:outline-none focus:border-blue-500"
+              className="input py-2"
               type="text"
-              placeholder="Enter Caption"
+              placeholder="Enter caption"
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
               required
             />
-            <button
-              onClick={updateCaption}
-              className="text-[11px] bg-blue-600 hover:bg-blue-700 font-semibold text-white px-3 py-1.5 rounded-xl transition-colors"
-              disabled={captionLoading}
-            >
-              {captionLoading ? <LoadingAnimation /> : "Save"}
-            </button>
-            <button
-              className="text-[11px] bg-slate-100 hover:bg-slate-200 font-semibold text-slate-600 px-3 py-1.5 rounded-xl transition-colors"
-              onClick={() => setShowInput(false)}
-            >
-              Cancel
-            </button>
+            <div className="flex gap-2 shrink-0">
+              <button onClick={updateCaption} className="btn-primary py-2" disabled={captionLoading}>
+                {captionLoading ? <LoadingAnimation /> : "Save"}
+              </button>
+              <button className="btn-secondary py-2" onClick={() => setShowInput(false)}>
+                Cancel
+              </button>
+            </div>
           </div>
         ) : (
-          <p className="text-sm text-slate-700 leading-relaxed font-medium">{value.caption}</p>
+          value.caption && (
+            <p className="text-[15px] text-slate-700 leading-relaxed whitespace-pre-line break-words">
+              {value.caption}
+            </p>
+          )
         )}
       </div>
 
-      <div className="mb-4 overflow-hidden rounded-xl bg-slate-900 border border-slate-100/60 flex items-center justify-center">
+      {/* MEDIA */}
+      <div className="bg-slate-950 flex items-center justify-center">
         {type === "post" ? (
           <img
             src={value.post?.url}
             alt=""
-            className="w-full max-h-[450px] object-contain"
+            loading="lazy"
+            className="w-full max-h-[560px] object-contain"
           />
         ) : (
           <video
             src={value.post?.url}
-            className="w-full max-h-[550px] object-contain aspect-[9/16]"
+            className="w-full max-h-[70vh] object-contain aspect-[9/16]"
             autoPlay
+            loop
+            playsInline
             controls
           />
         )}
       </div>
 
-      <div className="flex items-center justify-between text-slate-500 text-xs font-semibold px-1">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={likeHandler}
-              className={`text-2xl transition-transform active:scale-90 ${isLike ? "text-rose-500" : "text-slate-400 hover:text-rose-500"}`}
-            >
-              {isLike ? <IoHeartSharp /> : <IoHeartOutline />}
-            </button>
-            <button
-              className="hover:text-slate-700 transition-colors"
-              onClick={() => setOpen(true)}
-            >
-              {value.likes?.length || 0} likes
-            </button>
-          </div>
-
-          <button
-            className="flex items-center gap-1.5 hover:text-slate-700 transition-colors"
-            onClick={() => setShow(!show)}
-          >
-            <BsChatFill className="w-4 h-4 text-slate-400" />
-            <span>{value.comments?.length || 0} comments</span>
-          </button>
-        </div>
+      {/* ACTIONS */}
+      <div className="flex items-center gap-1 px-2 sm:px-3 pt-2">
+        <button
+          onClick={likeHandler}
+          aria-label={isLike ? "Unlike" : "Like"}
+          className={`p-2 rounded-full text-2xl transition-all active:scale-75 hover:bg-rose-50 ${
+            isLike ? "text-rose-500" : "text-slate-600 hover:text-rose-500"
+          }`}
+        >
+          {isLike ? <IoHeartSharp /> : <IoHeartOutline />}
+        </button>
+        <button
+          onClick={() => setShow(!show)}
+          aria-label="Comment"
+          className="p-2 rounded-full text-2xl text-slate-600 hover:text-brand-600 hover:bg-brand-50 transition-all"
+        >
+          <IoChatbubbleOutline />
+        </button>
       </div>
 
-      {show && (
-        <form onSubmit={addCommentHandler} className="flex gap-2 mt-4 px-1">
-          <input
-            type="text"
-            className="flex-1 px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-            placeholder="Write a comment..."
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            required
-          />
-          <button className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-md shadow-blue-500/10 transition-all" type="submit">
-            Add
-          </button>
-        </form>
-      )}
+      <div className="px-4 sm:px-5 flex items-center gap-3 text-sm">
+        <button className="font-bold text-slate-900 hover:underline" onClick={() => setOpen(true)}>
+          {likesCount} {likesCount === 1 ? "like" : "likes"}
+        </button>
+        <span className="text-slate-300">•</span>
+        <button className="text-slate-500 hover:text-slate-800" onClick={() => setShow(!show)}>
+          {commentsCount} {commentsCount === 1 ? "comment" : "comments"}
+        </button>
+      </div>
 
-      <div className="mt-4 border-t border-slate-100/80 pt-3">
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 px-1">Comments</p>
-        <div className="comments max-h-[180px] overflow-y-auto space-y-3 pr-1">
-          {value.comments && value.comments.length > 0 ? (
-            value.comments.map((e) => (
+      {/* COMMENTS */}
+      <div className="px-4 sm:px-5 pb-4 pt-3">
+        {commentsCount > 0 && (
+          <div className="scroll-thin max-h-[200px] overflow-y-auto space-y-1 pr-1">
+            {value.comments.map((e) => (
               <Comment
                 value={e}
                 key={e._id}
@@ -233,13 +233,35 @@ const PostCard = ({ type, value }) => {
                 owner={value.owner?._id}
                 id={value._id}
               />
-            ))
-          ) : (
-            <p className="text-xs text-slate-400 font-medium px-1 py-2">No comments yet. Start the conversation!</p>
-          )}
-        </div>
+            ))}
+          </div>
+        )}
+
+        {show && (
+          <form onSubmit={addCommentHandler} className="flex items-center gap-2 mt-3">
+            <img src={user.profilePic?.url} alt="" className="w-8 h-8 rounded-full object-cover shrink-0" />
+            <div className="relative flex-1">
+              <input
+                type="text"
+                autoFocus
+                className="input py-2.5 pr-11 rounded-full"
+                placeholder="Add a comment…"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                required
+              />
+              <button
+                type="submit"
+                aria-label="Post comment"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-brand-600 hover:bg-brand-700 text-white flex items-center justify-center transition-colors"
+              >
+                <IoSend className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </form>
+        )}
       </div>
-    </div>
+    </article>
   );
 };
 
@@ -255,25 +277,28 @@ export const Comment = ({ value, user, owner, id }) => {
   if (!value || !user) return null;
 
   return (
-    <div className="flex items-start justify-between gap-2 bg-slate-50/60 hover:bg-slate-50 p-2 rounded-xl transition-colors">
-      <div className="flex items-start gap-2.5">
-        <Link to={`/user/${value.user?._id}`} className="shrink-0 mt-0.5">
+    <div className="group flex items-start justify-between gap-2 p-2 rounded-xl hover:bg-slate-50 transition-colors">
+      <div className="flex items-start gap-2.5 min-w-0">
+        <Link to={`/user/${value.user?._id}`} className="shrink-0">
           <img
             src={value.user?.profilePic?.url}
-            className="w-7 h-7 rounded-full object-cover ring-1 ring-slate-100"
+            className="w-7 h-7 rounded-full object-cover"
             alt=""
           />
         </Link>
-        <div>
-          <Link to={`/user/${value.user?._id}`} className="text-xs font-bold text-slate-800 hover:underline">{value.user?.name}</Link>
-          <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">{value.comment}</p>
-        </div>
+        <p className="text-sm text-slate-700 leading-snug break-words min-w-0">
+          <Link to={`/user/${value.user?._id}`} className="font-bold text-slate-900 hover:underline mr-1.5">
+            {value.user?.name}
+          </Link>
+          {value.comment}
+        </p>
       </div>
 
-      {((owner === user._id) || (value.user?._id === user._id)) && (
-        <button 
-          onClick={deleteCommentHandler} 
-          className="text-slate-400 hover:text-rose-500 p-1 rounded-lg hover:bg-white transition-all shrink-0 self-center"
+      {(owner === user._id || value.user?._id === user._id) && (
+        <button
+          onClick={deleteCommentHandler}
+          aria-label="Delete comment"
+          className="text-slate-300 hover:text-rose-500 p-1 rounded-lg md:opacity-0 group-hover:opacity-100 transition-all shrink-0"
         >
           <MdDelete className="w-4 h-4" />
         </button>

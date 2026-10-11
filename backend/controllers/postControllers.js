@@ -82,6 +82,20 @@ export const getAllPosts = TryCatch(async (req, res) => {
   res.json({ posts, reels });
 });
 
+export const getPostLikes = TryCatch(async (req, res) => {
+  const post = await Post.findById(req.params.id).populate(
+    "likes",
+    "name profilePic"
+  );
+
+  if (!post)
+    return res.status(404).json({
+      message: "No Post with this id",
+    });
+
+  res.json({ likes: post.likes });
+});
+
 export const likeUnlikePost = TryCatch(async (req, res) => {
   const post = await Post.findById(req.params.id);
 

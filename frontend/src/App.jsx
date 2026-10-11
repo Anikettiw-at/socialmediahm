@@ -16,53 +16,47 @@ import ChatPage from "./pages/ChatPage";
 const App = () => {
   const { loading, isAuth, user } = UserData();
 
-  return (
-    <>
-      {loading ? (
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
         <Loading />
-      ) : (
-        <BrowserRouter>
-          {/* Main Frame Shell Structure */}
-          <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col antialiased">
-            
-            {/* Dynamic Content Core Grid Body Layout */}
-            <div className="flex-1 w-full max-w-7xl mx-auto pb-20 md:pb-6 transition-all">
-              <Routes>
-                <Route path="/" element={isAuth ? <Home /> : <Login />} />
-                <Route path="/reels" element={isAuth ? <Reels /> : <Login />} />
-                <Route
-                  path="/account"
-                  element={isAuth ? <Account user={user} /> : <Login />}
-                />
-                <Route
-                  path="/user/:id"
-                  element={isAuth ? <UserAccount user={user} /> : <Login />}
-                />
-                <Route path="/login" element={!isAuth ? <Login /> : <Home />} />
-                <Route
-                  path="/register"
-                  element={!isAuth ? <Register /> : <Home />}
-                />
-                <Route path="/search" element={isAuth ? <Search /> : <Login />} />
-                <Route
-                  path="/chat"
-                  element={isAuth ? <ChatPage user={user} /> : <Login />}
-                />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </div>
+      </div>
+    );
+  }
 
-            {/* Global Fixed Navigation Bar Frame Layer */}
-            {isAuth && (
-              <div className="fixed bottom-0 left-0 w-full md:sticky md:top-0 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] border-t md:border-b md:border-t-0 border-slate-100">
-                <NavigationBar />
-              </div>
-            )}
-            
-          </div>
-        </BrowserRouter>
-      )}
-    </>
+  return (
+    <BrowserRouter>
+      <div className="min-h-screen bg-slate-50 text-slate-800">
+        {isAuth && <NavigationBar />}
+
+        {/* Sidebar on desktop, bottom tab bar on mobile -> offset content accordingly */}
+        <main className={isAuth ? "md:pl-20 lg:pl-64 pb-20 md:pb-0" : ""}>
+          <Routes>
+            <Route path="/" element={isAuth ? <Home /> : <Login />} />
+            <Route path="/reels" element={isAuth ? <Reels /> : <Login />} />
+            <Route
+              path="/account"
+              element={isAuth ? <Account user={user} /> : <Login />}
+            />
+            <Route
+              path="/user/:id"
+              element={isAuth ? <UserAccount user={user} /> : <Login />}
+            />
+            <Route path="/login" element={!isAuth ? <Login /> : <Home />} />
+            <Route
+              path="/register"
+              element={!isAuth ? <Register /> : <Home />}
+            />
+            <Route path="/search" element={isAuth ? <Search /> : <Login />} />
+            <Route
+              path="/chat"
+              element={isAuth ? <ChatPage user={user} /> : <Login />}
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
   );
 };
 

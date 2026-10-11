@@ -2,12 +2,12 @@ import React from "react";
 
 const Message = ({ ownMessage, message }) => {
   return (
-    <div className={`flex w-full mb-1 ${ownMessage ? "justify-end" : "justify-start"}`}>
+    <div className={`flex w-full ${ownMessage ? "justify-end" : "justify-start"}`}>
       <span
-        className={`max-w-[75%] px-4 py-2.5 text-sm font-medium shadow-[0_1px_2px_rgba(0,0,0,0.02)] break-words ${
-          ownMessage 
-            ? "bg-blue-600 text-white rounded-2xl rounded-tr-sm" 
-            : "bg-slate-100 text-slate-800 rounded-2xl rounded-tl-sm"
+        className={`max-w-[78%] px-4 py-2.5 text-[15px] leading-snug break-words whitespace-pre-wrap ${
+          ownMessage
+            ? "bg-gradient-to-br from-brand-600 to-fuchsia-500 text-white rounded-2xl rounded-br-md shadow-sm shadow-brand-500/20"
+            : "bg-white text-slate-800 border border-slate-200/70 rounded-2xl rounded-bl-md"
         }`}
       >
         {message}

@@ -6,6 +6,7 @@ import {
   deletePost,
   editCaption,
   getAllPosts,
+  getPostLikes,
   likeUnlikePost,
   newPost,
 } from "../controllers/postControllers.js";
@@ -19,6 +20,7 @@ router.put("/:id", isAuth, editCaption);
 router.delete("/:id", isAuth, deletePost);
 
 router.get("/all", isAuth, getAllPosts);
+router.get("/:id", isAuth, getPostLikes);
 
 router.post("/like/:id", isAuth, likeUnlikePost);
 

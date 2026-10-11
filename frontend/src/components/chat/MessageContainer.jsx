@@ -5,8 +5,10 @@ import { LoadingAnimation } from "../Loading";
 import Message from "./Message";
 import MessageInput from "./MessageInput";
 import { SocketData } from "../../context/SocketContext";
+import { Link } from "react-router-dom";
+import { IoArrowBack } from "react-icons/io5";
 
-const MessageContainer = ({ selectedChat, setChats }) => {
+const MessageContainer = ({ selectedChat, setChats, isOnline, onBack }) => {
   const [messages, setMessages] = useState([]);
   const { user } = UserData();
   const [loading, setLoading] = useState(false);
@@ -69,30 +71,48 @@ const MessageContainer = ({ selectedChat, setChats }) => {
   if (!selectedChat) return null;
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full w-full bg-white">
       {/* Chat Header */}
-      <div className="flex w-full h-16 items-center gap-3 px-4 border-b border-slate-100 bg-white shrink-0">
-        <img
-          src={selectedChat.users[0]?.profilePic?.url}
-          className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-50"
-          alt=""
-        />
-        <div className="flex flex-col">
-          <span className="text-sm font-bold text-slate-800">{selectedChat.users[0]?.name}</span>
-          <span className="text-[11px] text-slate-400 font-medium">Direct Message</span>
-        </div>
+      <div className="flex w-full h-16 items-center gap-3 px-3 sm:px-4 border-b border-slate-100 bg-white shrink-0">
+        <button
+          onClick={onBack}
+          aria-label="Back to conversations"
+          className="md:hidden w-9 h-9 rounded-full text-slate-600 hover:bg-slate-100 flex items-center justify-center"
+        >
+          <IoArrowBack className="w-5 h-5" />
+        </button>
+        <Link to={`/user/${selectedChat.users[0]?._id}`} className="flex items-center gap-3 min-w-0 group">
+          <div className="relative shrink-0">
+            <img
+              src={selectedChat.users[0]?.profilePic?.url}
+              className="w-10 h-10 rounded-full object-cover"
+              alt=""
+            />
+            {isOnline && (
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></span>
+            )}
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-sm font-bold text-slate-900 truncate group-hover:text-brand-600 transition-colors">
+              {selectedChat.users[0]?.name}
+            </span>
+            <span className={`text-xs font-medium ${isOnline ? "text-emerald-600" : "text-slate-400"}`}>
+              {isOnline ? "Active now" : "Offline"}
+            </span>
+          </div>
+        </Link>
       </div>
 
       {/* Messages Stream Wrapper */}
-      <div className="flex-1 relative flex flex-col bg-slate-50/40 min-h-0">
+      <div className="flex-1 relative flex flex-col bg-slate-50 min-h-0">
         {loading ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10">
+          <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10 text-brand-600">
             <LoadingAnimation />
           </div>
         ) : (
           <div
             ref={messageContainerRef}
-            className="flex-1 flex flex-col gap-3 p-4 overflow-y-auto"
+            className="scroll-thin flex-1 flex flex-col gap-2 p-4 overflow-y-auto"
           >
             {messages && messages.length > 0 ? (
               messages.map((e) => (

@@ -2,19 +2,23 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { LoadingAnimation } from "../components/Loading";
-import { FaSearch, FaUserPlus } from "react-icons/fa";
+import { IoSearchOutline, IoChevronForward } from "react-icons/io5";
+import { FaUserFriends } from "react-icons/fa";
 
 const Search = () => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
 
-  async function fetchUsers() {
+  async function fetchUsers(e) {
+    e?.preventDefault();
     if (!search.trim()) return; // Khali search rokne ke liye
     setLoading(true);
     try {
-      const { data } = await axios.get("/api/user/all?search=" + search);
+      const { data } = await axios.get("/api/user/all?search=" + encodeURIComponent(search));
       setUsers(data);
+      setSearched(true);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -23,72 +27,67 @@ const Search = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-6 px-4">
-      <div className="max-w-md mx-auto flex flex-col gap-6">
-        
-        {/* Modern Clean Search Input Box */}
-        <div className="w-full bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-slate-100 p-4 flex items-center gap-3">
+    <div className="px-3 sm:px-4 py-5 sm:py-8">
+      <div className="max-w-xl mx-auto flex flex-col gap-5">
+        <div>
+          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Discover people</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Find friends and creators to follow.</p>
+        </div>
+
+        <form onSubmit={fetchUsers} className="card p-2 flex items-center gap-2">
           <div className="relative flex-1">
+            <IoSearchOutline className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
             <input
               type="text"
-              className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-slate-50 border border-slate-200 text-slate-700 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-              placeholder="Search users by name..."
+              className="w-full pl-11 pr-3 py-2.5 text-sm bg-transparent text-slate-800 placeholder-slate-400 focus:outline-none"
+              placeholder="Search by name…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && fetchUsers()} // Enter dabane par bhi search chalega
             />
-            <FaSearch className="absolute left-3.5 top-3.5 text-slate-400 text-xs" />
           </div>
-          <button
-            onClick={fetchUsers}
-            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-blue-500/10 hover:shadow-blue-500/20 transition-all"
-          >
+          <button type="submit" className="btn-primary px-5">
             Search
           </button>
-        </div>
+        </form>
 
-        {/* Dynamic Display Panel */}
-        <div className="w-full flex flex-col gap-2">
-          {loading ? (
-            <div className="flex justify-center py-10">
-              <LoadingAnimation />
-            </div>
-          ) : (
-            <>
-              {users && users.length > 0 ? (
-                users.map((e) => (
-                  <Link
-                    key={e._id}
-                    className="w-full bg-white hover:bg-slate-50/80 border border-slate-100 p-3 rounded-xl flex justify-between items-center gap-3 transition-all shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:scale-[1.01] active:scale-[0.99]"
-                    to={`/user/${e._id}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={e.profilePic.url}
-                        alt={e.name}
-                        className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100"
-                      />
-                      <span className="text-sm font-semibold text-slate-700">{e.name}</span>
-                    </div>
-                    {/* View Profile Subtle Indicator */}
-                    <span className="text-[11px] font-medium text-blue-500 bg-blue-50 px-2.5 py-1 rounded-md">
-                      View Profile
-                    </span>
-                  </Link>
-                ))
-              ) : (
-                /* Minimal Empty State */
-                <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-200 p-6">
-                  <FaUserPlus className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                  <p className="text-xs font-medium text-slate-400">
-                    {search ? "No users match your search criteria" : "Type a name above to discover new connections"}
-                  </p>
+        {loading ? (
+          <div className="flex justify-center py-10 text-brand-600">
+            <LoadingAnimation />
+          </div>
+        ) : users && users.length > 0 ? (
+          <div className="card divide-y divide-slate-100 overflow-hidden">
+            {users.map((e) => (
+              <Link
+                key={e._id}
+                className="flex items-center justify-between gap-3 p-3.5 hover:bg-slate-50 transition-colors group"
+                to={`/user/${e._id}`}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <img src={e.profilePic?.url} alt={e.name} className="w-11 h-11 rounded-full object-cover" />
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-slate-900 truncate">{e.name}</p>
+                    <p className="text-xs text-slate-400">
+                      {e.followers?.length || 0} followers
+                    </p>
+                  </div>
                 </div>
-              )}
-            </>
-          )}
-        </div>
-
+                <IoChevronForward className="text-slate-300 group-hover:text-brand-500 group-hover:translate-x-0.5 transition-all" />
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="card border-dashed py-16 text-center px-6">
+            <div className="w-14 h-14 rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center mx-auto mb-4">
+              <FaUserFriends className="w-6 h-6" />
+            </div>
+            <p className="text-sm font-semibold text-slate-700">
+              {searched ? "No users match your search" : "Search for people by name"}
+            </p>
+            <p className="text-xs text-slate-400 mt-1">
+              {searched ? "Try a different name." : "Type a name above and press Enter."}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
