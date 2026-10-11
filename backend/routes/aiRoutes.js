@@ -1,11 +1,16 @@
 import express from "express";
 const router = express.Router();
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { isAuth } from "../middlewares/isAuth.js";
+import rateLimit from "../middlewares/rateLimit.js";
 
-router.post("/generate-post", async (req, res) => {
+// Sirf logged-in users, aur har user 1 minute me max 5 generations (API cost/abuse se bachne ke liye)
+router.post("/generate-post", isAuth, rateLimit({ windowMs: 60 * 1000, max: 5 }), async (req, res) => {
   try {
-    const { topic } = req.body;
+    const topic = typeof req.body.topic === "string" ? req.body.topic.trim() : "";
     if (!topic) return res.status(400).json({ error: "Topic required" });
+    if (topic.length > 200)
+      return res.status(400).json({ error: "Topic must be under 200 characters" });
 
     // yahan initialize karo, top pe nahi
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);

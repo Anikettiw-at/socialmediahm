@@ -16,10 +16,9 @@ export const SocketContextProvider = ({ children }) => {
     // Agar user logged in nahi hai toh socket connect karne ki zaroorat nahi hai
     if (!user?._id) return;
 
+    // Server token cookie se user identify karta hai, isliye cookies bhejna zaroori hai
     const socketInstance = io(EndPoint, {
-      query: {
-        userId: user._id,
-      },
+      withCredentials: true,
     });
 
     setSocket(socketInstance);

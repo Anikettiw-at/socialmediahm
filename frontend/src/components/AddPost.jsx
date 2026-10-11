@@ -17,15 +17,16 @@ const AddPost = ({ type }) => {
     
     setGenerating(true);
     try {
-      const res = await axios.post("http://localhost:7000/api/ai/generate-post", { 
-        topic: aiTopic 
+      // Relative URL: axios.defaults.baseURL (main.jsx) local aur production dono handle karta hai
+      const res = await axios.post("/api/ai/generate-post", {
+        topic: aiTopic,
       });
-      
+
       // Direct caption state me AI post fill ho jayegi
-      setCaption(res.data.post); 
+      setCaption(res.data.post);
     } catch (err) {
       console.error(err);
-      alert("AI generation failed, check backend server");
+      alert(err.response?.data?.error || "AI generation failed, check backend server");
     } finally {
       setGenerating(false);
     }
@@ -66,6 +67,7 @@ const AddPost = ({ type }) => {
             className="flex-1 px-3 py-2 text-xs sm:text-sm rounded-lg bg-white border border-purple-200/60 text-slate-700 placeholder-slate-400 focus:outline-none focus:border-purple-500 font-medium"
             placeholder="AI Topic (e.g. 'My new MERN project', 'DSA practice')..."
             value={aiTopic}
+            maxLength={200}
             onChange={(e) => setAiTopic(e.target.value)}
           />
           <button

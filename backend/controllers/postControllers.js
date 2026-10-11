@@ -90,20 +90,15 @@ export const likeUnlikePost = TryCatch(async (req, res) => {
       message: "No Post with this id",
     });
 
-  if (post.likes.includes(req.user._id)) {
-    const index = post.likes.indexOf(req.user._id);
-
-    post.likes.splice(index, 1);
-
-    await post.save();
+  // $pull / $addToSet atomic hain: parallel requests me likes lost ya duplicate nahi honge
+  if (post.likes.some((id) => id.equals(req.user._id))) {
+    await Post.updateOne({ _id: post._id }, { $pull: { likes: req.user._id } });
 
     res.json({
       message: "Post Unlike",
     });
   } else {
-    post.likes.push(req.user._id);
-
-    await post.save();
+    await Post.updateOne({ _id: post._id }, { $addToSet: { likes: req.user._id } });
 
     res.json({
       message: "Post liked",

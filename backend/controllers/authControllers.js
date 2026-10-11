@@ -1,6 +1,6 @@
 import { User } from "../models/userModel.js";
 import TryCatch from "../utils/Trycatch.js";
-import generateToken from "../utils/generateToken.js";
+import generateToken, { cookieOptions } from "../utils/generateToken.js";
 import getDataUrl from "../utils/urlGenrator.js";
 import bcrypt from "bcrypt";
 import cloudinary from "cloudinary";
@@ -74,7 +74,7 @@ export const loginUser = TryCatch(async (req, res) => {
 });
 
 export const logoutUser = TryCatch((req, res) => {
-  res.cookie("token", "", { maxAge: 0 });
+  res.clearCookie("token", cookieOptions);
 
   res.json({
     message: "Logged out successfully",

@@ -2,24 +2,25 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/userModel.js";
 
 export const isAuth = async (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (!token) return res.status(401).json({ message: "Please Login" });
+
+  let decodedData;
   try {
-    const token = req.cookies.token;
+    decodedData = jwt.verify(token, process.env.JWT_SEC);
+  } catch (error) {
+    // Invalid ya expired token client ki problem hai, server error nahi
+    return res.status(401).json({ message: "Session expired, please login" });
+  }
 
-    if (!token) return res.status(403).json({ message: "Unauthorized" });
-
-    const decodedData = jwt.verify(token, process.env.JWT_SEC);
-
-    if (!decodedData)
-      return res.status(400).json({
-        message: "Token Expired",
-      });
-
+  try {
     req.user = await User.findById(decodedData.id);
+
+    if (!req.user) return res.status(401).json({ message: "Please Login" });
 
     next();
   } catch (error) {
-    res.status(500).json({
-      message: "Please Login",
-    });
+    res.status(500).json({ message: error.message });
   }
 };

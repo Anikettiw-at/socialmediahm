@@ -1,6 +1,6 @@
 import { Chat } from "../models/ChatModel.js";
 import { Messages } from "../models/Messages.js";
-import { getReciverSocketId, io } from "../socket/socket.js";
+import { io } from "../socket/socket.js";
 import TryCatch from "../utils/Trycatch.js";
 
 export const sendMessage = TryCatch(async (req, res) => {
@@ -44,11 +44,8 @@ export const sendMessage = TryCatch(async (req, res) => {
     },
   });
 
-  const reciverSocketId = getReciverSocketId(recieverId);
-
-  if (reciverSocketId) {
-    io.to(reciverSocketId).emit("newMessage", newMessage);
-  }
+  // Receiver ke saare open tabs (uske userId room) ko message bhejo; offline ho toh koi effect nahi
+  io.to(recieverId.toString()).emit("newMessage", newMessage);
 
   res.status(201).json(newMessage);
 });

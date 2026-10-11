@@ -16,6 +16,7 @@ import { isAuth } from "./middlewares/isAuth.js";
 import { User } from "./models/userModel.js";
 import { app, server } from "./socket/socket.js";
 import cors from "cors";
+import { corsOrigin } from "./utils/allowedOrigins.js";
 
 // Routes imports
 import userRoutes from "./routes/userRoutes.js";
@@ -31,22 +32,9 @@ cloudinary.v2.config({
   api_secret: process.env.Cloudinary_Secret,
 });
 
-// 🔥 MIDDLEWARES SETUP - CORS FIXED FOR PRODUCTION & LOCAL
-const allowedOrigins = [
-  "http://localhost:5173", // Aapka local vite frontend port
-  "http://localhost:3000",
-  "https://socialmediahm.vercel.app"
-];
-
+// 🔥 MIDDLEWARES SETUP - CORS: sirf whitelisted frontends (utils/allowedOrigins.js)
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      return callback(null, true);
-    }
-    return callback(null, true);
-  },
-  origin: true, // Render cloud validation bypass fallback
+  origin: corsOrigin,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
@@ -85,7 +73,10 @@ app.get("/api/messages/chats", isAuth, async (req, res) => {
 // To get all users
 app.get("/api/user/all", isAuth, async (req, res) => {
   try {
-    const search = req.query.search || "";
+    // Regex special characters escape karo taaki user apna regex inject na kar sake (ReDoS)
+    const search = String(req.query.search || "")
+      .slice(0, 50)
+      .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const users = await User.find({
       name: {
         $regex: search,

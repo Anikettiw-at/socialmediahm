@@ -23,37 +23,33 @@ export const userProfile = TryCatch(async (req, res) => {
 
 export const followandUnfollowUser = TryCatch(async (req, res) => {
   const user = await User.findById(req.params.id);
-  const loggedInUser = await User.findById(req.user._id);
+  const loggedInUserId = req.user._id;
 
   if (!user)
     return res.status(404).json({
       message: "No User with is id",
     });
 
-  if (user._id.toString() === loggedInUser._id.toString())
+  if (user._id.equals(loggedInUserId))
     return res.status(400).json({
       message: "You can't follow yourself",
     });
 
-  if (user.followers.includes(loggedInUser._id)) {
-    const indexFollowing = loggedInUser.followings.indexOf(user._id);
-    const indexFollower = user.followers.indexOf(loggedInUser._id);
-
-    loggedInUser.followings.splice(indexFollowing, 1);
-    user.followers.splice(indexFollower, 1);
-
-    await loggedInUser.save();
-    await user.save();
+  // $pull / $addToSet atomic hain: double-click ya parallel requests se duplicate/lost entries nahi banengi
+  if (user.followers.some((id) => id.equals(loggedInUserId))) {
+    await Promise.all([
+      User.updateOne({ _id: loggedInUserId }, { $pull: { followings: user._id } }),
+      User.updateOne({ _id: user._id }, { $pull: { followers: loggedInUserId } }),
+    ]);
 
     res.json({
       message: "User Unfollowed",
     });
   } else {
-    loggedInUser.followings.push(user._id);
-    user.followers.push(loggedInUser._id);
-
-    await loggedInUser.save();
-    await user.save();
+    await Promise.all([
+      User.updateOne({ _id: loggedInUserId }, { $addToSet: { followings: user._id } }),
+      User.updateOne({ _id: user._id }, { $addToSet: { followers: loggedInUserId } }),
+    ]);
 
     res.json({
       message: "User Followed",
