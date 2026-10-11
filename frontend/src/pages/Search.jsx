@@ -67,7 +67,7 @@ const Search = () => {
                   <div className="min-w-0">
                     <p className="text-sm font-bold text-slate-900 truncate">{e.name}</p>
                     <p className="text-xs text-slate-400">
-                      {e.followers?.length || 0} followers
+                      {e.followers?.length || 0} {e.followers?.length === 1 ? "follower" : "followers"}
                     </p>
                   </div>
                 </div>

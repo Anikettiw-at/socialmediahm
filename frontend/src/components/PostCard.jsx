@@ -34,6 +34,14 @@ const PostCard = ({ type, value }) => {
     likePost(value._id);
   };
 
+  // Instagram-style double tap: only likes, never unlikes
+  const [burst, setBurst] = useState(false);
+  const doubleTapHandler = () => {
+    if (!isLike) likeHandler();
+    setBurst(true);
+    setTimeout(() => setBurst(false), 700);
+  };
+
   const [comment, setComment] = useState("");
 
   const addCommentHandler = (e) => {
@@ -171,13 +179,14 @@ const PostCard = ({ type, value }) => {
       </div>
 
       {/* MEDIA */}
-      <div className="bg-slate-950 flex items-center justify-center">
+      <div className="relative bg-slate-950 flex items-center justify-center">
         {type === "post" ? (
           <img
             src={value.post?.url}
             alt=""
             loading="lazy"
-            className="w-full max-h-[560px] object-contain"
+            onDoubleClick={doubleTapHandler}
+            className="w-full max-h-[560px] object-contain select-none cursor-pointer"
           />
         ) : (
           <video
@@ -188,6 +197,9 @@ const PostCard = ({ type, value }) => {
             playsInline
             controls
           />
+        )}
+        {burst && (
+          <IoHeartSharp className="pointer-events-none absolute w-24 h-24 text-white drop-shadow-xl animate-heartBurst" />
         )}
       </div>
 

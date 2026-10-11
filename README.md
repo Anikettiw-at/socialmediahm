@@ -24,6 +24,36 @@
 
 Create an account (any email works) and start posting, following and chatting.
 
+## 📸 Screenshots
+
+> Screenshots were taken with demo users and sample content.
+
+### Home feed
+![Home feed with post composer, suggestions and active users](docs/screenshots/feed.png)
+
+### Real-time chat
+![Two-pane chat with online status](docs/screenshots/chat.png)
+
+### Profile
+![Profile page with cover, stats and posts](docs/screenshots/profile.png)
+
+<table>
+  <tr>
+    <td width="50%"><b>Login</b><br><img src="docs/screenshots/login.png" alt="Login page"></td>
+    <td width="50%"><b>Discover people</b><br><img src="docs/screenshots/search.png" alt="User search"></td>
+  </tr>
+</table>
+
+### 📱 Mobile
+
+<p align="center">
+  <img src="docs/screenshots/mobile-feed.png" alt="Mobile feed" width="30%">
+  &nbsp;
+  <img src="docs/screenshots/mobile-chat.png" alt="Mobile chat" width="30%">
+  &nbsp;
+  <img src="docs/screenshots/mobile-profile.png" alt="Mobile profile" width="30%">
+</p>
+
 ## ✨ Features
 
 | | Feature | Details |
@@ -31,12 +61,12 @@ Create an account (any email works) and start posting, following and chatting.
 | 🔐 | **Authentication** | Register with a profile photo, log in and log out. JWT stored in an HTTP-only cookie, passwords hashed with bcrypt |
 | 📝 | **Posts** | Upload images with captions, edit captions, delete your own posts |
 | 🎬 | **Reels** | Upload short videos and browse them one at a time |
-| ❤️ | **Likes & comments** | Like or unlike posts, see who liked them, add and delete comments |
+| ❤️ | **Likes & comments** | Like or unlike posts (or double-tap the photo), see who liked them, add and delete comments |
 | 👥 | **Follow system** | Follow or unfollow users and view follower and following lists |
-| 💬 | **Real-time chat** | One-to-one messaging over Socket.io with live online status |
+| 💬 | **Real-time chat** | One-to-one messaging over Socket.io with timestamps and live online status |
 | 🟢 | **Online presence** | Green dot on avatars of users who are currently online |
 | ✨ | **AI caption generator** | Enter a topic and Google Gemini writes a ready-to-post caption (rate-limited to 5 per minute per user) |
-| 🔎 | **User search** | Find people by name (input is regex-escaped) |
+| 🔎 | **Discover people** | Search users by name and get "Suggested for you" recommendations |
 | 👤 | **Profile management** | Change your profile photo, name and password |
 | 📱 | **Responsive UI** | Sidebar navigation on desktop, bottom tab bar on mobile |
 

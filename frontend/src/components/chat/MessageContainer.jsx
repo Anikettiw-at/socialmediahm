@@ -119,6 +119,7 @@ const MessageContainer = ({ selectedChat, setChats, isOnline, onBack }) => {
                 <Message
                   key={e._id}
                   message={e.text}
+                  time={e.createdAt}
                   ownMessage={e.sender === user?._id}
                 />
               ))

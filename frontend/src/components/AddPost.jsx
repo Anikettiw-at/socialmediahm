@@ -79,8 +79,8 @@ const AddPost = ({ type }) => {
             className="w-10 h-10 rounded-full object-cover shrink-0 hidden sm:block"
           />
           <textarea
-            rows="3"
-            className="input resize-none text-[15px] bg-transparent border-transparent focus:bg-slate-50 focus:border-slate-200 focus:ring-0 px-2 sm:px-3"
+            rows="2"
+            className="input resize-none sm:min-h-[84px] text-[15px] bg-transparent border-transparent focus:bg-slate-50 focus:border-slate-200 focus:ring-0 px-2 sm:px-3"
             placeholder={isPost ? `What's on your mind, ${user?.name?.split(" ")[0] || "friend"}?` : "Write a caption for your reel…"}
             value={caption}
             onChange={(e) => setCaption(e.target.value)}

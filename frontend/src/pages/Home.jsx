@@ -1,8 +1,9 @@
 import React from "react";
 import AddPost from "../components/AddPost";
 import PostCard from "../components/PostCard";
+import PostSkeleton from "../components/PostSkeleton";
+import RightSidebar from "../components/RightSidebar";
 import { PostData } from "../context/PostContext";
-import { Loading } from "../components/Loading";
 import { FaRegNewspaper } from "react-icons/fa6";
 
 const Home = () => {
@@ -10,10 +11,8 @@ const Home = () => {
 
   return (
     <div className="px-3 sm:px-4 py-5 sm:py-8">
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className="max-w-xl mx-auto flex flex-col gap-5">
+      <div className="flex justify-center gap-8">
+        <div className="w-full max-w-xl flex flex-col gap-5">
           <AddPost type="post" />
 
           <div className="flex items-center gap-3 px-1 pt-2">
@@ -21,7 +20,12 @@ const Home = () => {
             <div className="flex-1 h-px bg-slate-200" />
           </div>
 
-          {posts && posts.length > 0 ? (
+          {loading ? (
+            <>
+              <PostSkeleton />
+              <PostSkeleton />
+            </>
+          ) : posts && posts.length > 0 ? (
             posts.map((e) => <PostCard key={e._id} value={e} type={"post"} />)
           ) : (
             <div className="card border-dashed py-16 text-center">
@@ -35,7 +39,9 @@ const Home = () => {
             </div>
           )}
         </div>
-      )}
+
+        <RightSidebar />
+      </div>
     </div>
   );
 };

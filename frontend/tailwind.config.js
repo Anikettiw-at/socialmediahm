@@ -30,10 +30,17 @@ export default {
           from: { opacity: 0, transform: "scale(0.96) translateY(6px)" },
           to: { opacity: 1, transform: "scale(1) translateY(0)" },
         },
+        heartBurst: {
+          "0%": { opacity: 0, transform: "scale(0.4)" },
+          "25%": { opacity: 1, transform: "scale(1.15)" },
+          "60%": { opacity: 1, transform: "scale(1)" },
+          "100%": { opacity: 0, transform: "scale(1.1)" },
+        },
       },
       animation: {
         fadeIn: "fadeIn 0.2s ease-out",
         popIn: "popIn 0.22s ease-out",
+        heartBurst: "heartBurst 0.7s ease-out forwards",
       },
     },
   },

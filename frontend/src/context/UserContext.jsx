@@ -123,6 +123,7 @@ export const UserContextProvider = ({ children }) => {
         logoutUser,
         registerUser,
         followUser,
+        fetchUser,
         updateProfilePic,
         updateProfileName,
       }}
