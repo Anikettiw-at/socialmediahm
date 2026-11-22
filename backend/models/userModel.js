@@ -39,6 +39,13 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    // Response (res.json) me password hash kabhi client tak na jaye
+    toJSON: {
+      transform: (doc, ret) => {
+        delete ret.password;
+        return ret;
+      },
+    },
   }
 );
 

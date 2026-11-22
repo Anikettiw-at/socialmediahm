@@ -63,6 +63,11 @@ export const userFollowerandFollowingData = TryCatch(async (req, res) => {
     .populate("followers", "-password")
     .populate("followings", "-password");
 
+  if (!user)
+    return res.status(404).json({
+      message: "No User with is id",
+    });
+
   const followers = user.followers;
   const followings = user.followings;
 
@@ -104,6 +109,11 @@ export const updatePassword = TryCatch(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword)
+    return res.status(400).json({
+      message: "Please give old and new password",
+    });
 
   const comparePassword = await bcrypt.compare(oldPassword, user.password);
 

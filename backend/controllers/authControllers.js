@@ -51,6 +51,11 @@ export const registerUser = TryCatch(async (req, res) => {
 export const loginUser = TryCatch(async (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password)
+    return res.status(400).json({
+      message: "Please give email and password",
+    });
+
   const user = await User.findOne({ email });
 
   if (!user)

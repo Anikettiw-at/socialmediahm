@@ -13,6 +13,16 @@ export const sendMessage = TryCatch(async (req, res) => {
       message: "Please give reciever id",
     });
 
+  if (typeof message !== "string" || !message.trim())
+    return res.status(400).json({
+      message: "Message cannot be empty",
+    });
+
+  if (recieverId.toString() === senderId.toString())
+    return res.status(400).json({
+      message: "You can't message yourself",
+    });
+
   let chat = await Chat.findOne({
     users: { $all: [senderId, recieverId] },
   });

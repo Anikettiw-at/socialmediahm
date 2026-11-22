@@ -9,11 +9,21 @@ export const newPost = TryCatch(async (req, res) => {
   const ownerId = req.user._id;
 
   const file = req.file;
+  if (!file)
+    return res.status(400).json({
+      message: "Please upload a file",
+    });
+
+  const type = req.query.type;
+  if (type !== "post" && type !== "reel")
+    return res.status(400).json({
+      message: "Type must be post or reel",
+    });
+
   const fileUrl = getDataUrl(file);
 
   let option;
 
-  const type = req.query.type;
   if (type === "reel") {
     option = {
       resource_type: "video",
@@ -53,7 +63,10 @@ export const deletePost = TryCatch(async (req, res) => {
       message: "Unauthorized",
     });
 
-  await cloudinary.v2.uploader.destroy(post.post.id);
+  // Reels video resource hain; bina resource_type ke Cloudinary unhe delete nahi karta
+  await cloudinary.v2.uploader.destroy(post.post.id, {
+    resource_type: post.type === "reel" ? "video" : "image",
+  });
 
   await post.deleteOne();
 
@@ -128,10 +141,16 @@ export const commentonPost = TryCatch(async (req, res) => {
       message: "No Post with this id",
     });
 
+  const comment = typeof req.body.comment === "string" ? req.body.comment.trim() : "";
+  if (!comment)
+    return res.status(400).json({
+      message: "Comment cannot be empty",
+    });
+
   post.comments.push({
     user: req.user._id,
     name: req.user.name,
-    comment: req.body.comment,
+    comment,
   });
 
   await post.save();
@@ -178,8 +197,8 @@ export const deleteComment = TryCatch(async (req, res) => {
       message: "Comment deleted",
     });
   } else {
-    return res.status(400).json({
-      message: "Yor are not allowed to delete this comment",
+    return res.status(403).json({
+      message: "You are not allowed to delete this comment",
     });
   }
 });
