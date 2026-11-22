@@ -18,29 +18,17 @@ const MessageContainer = ({ selectedChat, setChats, isOnline, onBack }) => {
   useEffect(() => {
     if (!socket) return;
 
-    socket.on("newMessage", (message) => {
+    // Chat list ka preview ChatPage update karta hai; yahan sirf open chat me message jodo.
+    // Named handler off karo, warna socket.off("newMessage") ChatPage ka listener bhi hata deta
+    const handleNewMessage = (message) => {
       if (selectedChat?._id === message.chatId) {
         setMessages((prev) => [...prev, message]);
       }
+    };
 
-      setChats((prev) => {
-        return prev.map((chat) => {
-          if (chat._id === message.chatId) {
-            return {
-              ...chat,
-              latestMessage: {
-                text: message.text,
-                sender: message.sender,
-              },
-            };
-          }
-          return chat;
-        });
-      });
-    });
-
-    return () => socket.off("newMessage");
-  }, [socket, selectedChat?._id, setChats]);
+    socket.on("newMessage", handleNewMessage);
+    return () => socket.off("newMessage", handleNewMessage);
+  }, [socket, selectedChat?._id]);
 
   async function fetchMessages() {
     if (!selectedChat?.users?.[0]?._id) return;

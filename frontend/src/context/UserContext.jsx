@@ -21,7 +21,7 @@ export const UserContextProvider = ({ children }) => {
       setLoading(false);
       fetchPosts();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
       setLoading(false);
     }
   }
@@ -32,7 +32,6 @@ export const UserContextProvider = ({ children }) => {
       const { data } = await axios.post("/api/auth/login", {
         email,
         password,
-        navigate,
       });
 
       toast.success(data.message);
@@ -42,7 +41,7 @@ export const UserContextProvider = ({ children }) => {
       setLoading(false);
       fetchPosts();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
       setLoading(false);
     }
   }
@@ -72,7 +71,7 @@ export const UserContextProvider = ({ children }) => {
         navigate("/login");
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
     }
   }
 
@@ -83,7 +82,7 @@ export const UserContextProvider = ({ children }) => {
       toast.success(data.message);
       fetchUser();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
     }
   }
 
@@ -94,7 +93,7 @@ export const UserContextProvider = ({ children }) => {
       fetchUser();
       setFile(null);
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
     }
   }
   async function updateProfileName(id, name, setShowInput) {
@@ -104,7 +103,7 @@ export const UserContextProvider = ({ children }) => {
       fetchUser();
       setShowInput(false);
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
     }
   }
 

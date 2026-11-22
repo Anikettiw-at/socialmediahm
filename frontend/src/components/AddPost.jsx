@@ -60,6 +60,8 @@ const AddPost = ({ type }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    if (!file) return toast.error(isPost ? "Please select an image" : "Please select a video");
+
     const formdata = new FormData();
 
     formdata.append("caption", caption);

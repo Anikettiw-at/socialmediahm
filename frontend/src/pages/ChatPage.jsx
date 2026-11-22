@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ChatData } from "../context/ChatContext";
 import axios from "axios";
@@ -16,9 +16,14 @@ const ChatPage = ({ user }) => {
   const [search, setSearch] = useState(false);
   const location = useLocation();
 
+  // Socket handler me hamesha latest chats dikhe (stale closure se bachne ke liye)
+  const chatsRef = useRef(chats);
+  chatsRef.current = chats;
+
   async function fetchAllUsers() {
     try {
-      const { data } = await axios.get("/api/user/all?search=" + query);
+      // params se query encode hoti hai, warna "&" / "#" jaise characters search tod dete
+      const { data } = await axios.get("/api/user/all", { params: { search: query } });
 
       setUsers(data);
     } catch (error) {
@@ -67,7 +72,30 @@ const ChatPage = ({ user }) => {
     })();
   }, []);
 
-  const { onlineUsers } = SocketData();
+  const { socket, onlineUsers } = SocketData();
+
+  // Conversation list ka preview hamesha update ho, chahe koi chat open ho ya nahi.
+  // Naye insaan ne pehli baar message kiya ho toh woh chat list me hai hi nahi, isliye refetch.
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewMessage = (message) => {
+      if (!chatsRef.current.some((chat) => chat._id === message.chatId)) {
+        getAllChats();
+        return;
+      }
+      setChats((prev) =>
+        prev.map((chat) =>
+          chat._id === message.chatId
+            ? { ...chat, latestMessage: { text: message.text, sender: message.sender } }
+            : chat
+        )
+      );
+    };
+
+    socket.on("newMessage", handleNewMessage);
+    return () => socket.off("newMessage", handleNewMessage);
+  }, [socket]);
 
   return (
     <div className="md:p-4 lg:p-6">
