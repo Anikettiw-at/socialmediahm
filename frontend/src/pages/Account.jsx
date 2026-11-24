@@ -165,7 +165,7 @@ const Account = ({ user }) => {
         {showUpdatePass && (
           <form onSubmit={updatePassword} className="card p-5 sm:p-6 animate-popIn">
             <h2 className="text-base font-bold text-slate-900">Change password</h2>
-            <p className="text-sm text-slate-500 mt-0.5 mb-4">Use a strong password you don't use elsewhere.</p>
+            <p className="text-sm text-slate-500 mt-0.5 mb-4">Use a strong password you don&apos;t use elsewhere.</p>
             <div className="grid sm:grid-cols-2 gap-3">
               <input
                 type="password"

@@ -77,7 +77,7 @@ const RightSidebar = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-slate-400">You're following everyone 🎉</p>
+            <p className="text-sm text-slate-400">You&apos;re following everyone 🎉</p>
           )}
         </div>
 

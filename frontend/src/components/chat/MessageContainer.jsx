@@ -8,7 +8,7 @@ import { SocketData } from "../../context/SocketContext";
 import { Link } from "react-router-dom";
 import { IoArrowBack } from "react-icons/io5";
 
-const MessageContainer = ({ selectedChat, setChats, isOnline, onBack }) => {
+const MessageContainer = ({ selectedChat, isOnline, onBack }) => {
   const [messages, setMessages] = useState([]);
   const { user } = UserData();
   const [loading, setLoading] = useState(false);
